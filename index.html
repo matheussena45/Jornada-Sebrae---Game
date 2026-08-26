@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Jornada Sebrae</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.70.0/phaser.min.js"></script>
+  </head>
+
+  <body>
+    <div id="game-wrapper">
+      <div id="game-container"></div>
+
+      <div id="touch-controls">
+        <button
+          id="btn-left"
+          class="touch-btn"
+          aria-label="Mover para a esquerda"
+        >
+          ◀
+        </button>
+        <button
+          id="btn-right"
+          class="touch-btn"
+          aria-label="Mover para a direita"
+        >
+          ▶
+        </button>
+      </div>
+
+      <!-- HUD -->
+      <div id="hud">
+        <div id="hud-left" class="hud-card">
+          <div class="hud-card-top">
+            <img
+              id="hud-character-icon"
+              src="assets/thumbnails/city_men_1.png"
+              alt="Personagem"
+            />
+
+            <div id="hud-lives">❤️❤️❤️❤️❤️❤️</div>
+          </div>
+
+          <div class="hud-card-row">🪙 <span id="score-value">0</span></div>
+
+          <div class="hud-card-row hud-phase-info">
+            <span id="phase-label">Fase 1</span>
+            <strong id="phase-name">Abrindo sua Empresa</strong>
+          </div>
+
+          <div class="hud-card-row hud-small">
+            📖
+            <span id="hud-murais-count">0</span>/
+            <span id="hud-murais-total">3</span>
+          </div>
+          <div class="hud-card-row hud-small" id="hud-objective"></div>
+        </div>
+      </div>
+
+      <!-- Apresentação do título da fase -->
+      <div id="phase-intro" class="hidden">
+        <span id="phase-intro-label">Fase 1</span>
+        <strong id="phase-intro-name"> Abrindo sua Empresa </strong>
+      </div>
+
+      <!-- Caixa narrativa das fases de transição -->
+      <div id="narrative-overlay" class="hidden">
+        <div id="narrative-box">
+          <div id="narrative-speaker">📖 Narrador</div>
+
+          <p id="narrative-text"></p>
+
+          <span id="narrative-continue"> Clique para continuar </span>
+        </div>
+      </div>
+
+      <!-- Caixa de informação -->
+      <div id="info-bubble" class="info-bubble-hidden">
+        <span class="info-bubble-content"></span>
+      </div>
+
+      <!-- Overlay de batalha do boss (PAUSA o jogo) -->
+      <div id="boss-overlay" class="hidden">
+        <div class="dialogue-badge" id="dialogue-header">⏱ 30s</div>
+
+        <div id="boss-dialogue" class="boss-dialogue">
+          <div class="boss-name-tag" id="boss-name">BOSS</div>
+          <p id="question-text" class="question-bubble">Pergunta?</p>
+        </div>
+
+        <div id="boss-answers-panel" class="boss-answers-panel hidden">
+          <div id="question-options"></div>
+        </div>
+      </div>
+
+      <!-- Tela final (vitória ou derrota) -->
+      <div id="end-overlay" class="hidden">
+        <div class="end-panel">
+          <h2 id="end-title">Fim de Jogo</h2>
+          <p id="end-message"></p>
+          <div id="end-score"></div>
+          <div id="end-buttons">
+            <button id="view-ranking-btn">Ver ranking</button>
+            <button id="restart-btn">Jogar novamente</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de Ranking (acessível a partir da tela final) -->
+      <div id="ranking-overlay" class="hidden">
+        <div class="ranking-panel">
+          <h2>🏆 Ranking Top 10</h2>
+          <div id="ranking-list-content"></div>
+          <button id="close-ranking-btn">Fechar</button>
+        </div>
+      </div>
+
+      <!-- ================= MENU INICIAL ================= -->
+      <div id="start-overlay">
+        <div class="menu-wrapper">
+          <!-- MENU PRINCIPAL -->
+          <div id="panel-menu" class="menu-panel">
+            <h1>Jornada Sebrae</h1>
+            <p class="tagline">Uma aventura empresarial.</p>
+            <div class="menu-buttons">
+              <button class="menu-btn menu-btn-play" data-target="panel-name">
+                ▶ Jogar
+              </button>
+              <button class="menu-btn" data-target="panel-ranking">
+                🏆 Ranking
+              </button>
+              <button class="menu-btn" data-target="panel-rules">
+                📋 Regras
+              </button>
+              <button class="menu-btn" data-target="panel-empresa">
+                🏢 Sobre a Empresa
+              </button>
+              <button class="menu-btn" data-target="panel-criador">
+                👤 Criador
+              </button>
+            </div>
+          </div>
+
+          <!-- ESCOLHA DE PERSONAGEM + NOME (aparece ao clicar em Jogar) -->
+          <div id="panel-name" class="menu-panel hidden">
+            <h2>Antes de começar...</h2>
+
+            <label>Escolha seu personagem</label>
+            <div id="character-select" class="character-grid">
+              <button
+                class="character-option selected"
+                data-character="city_men_1"
+              >
+                <img
+                  src="assets/thumbnails/city_men_1.png"
+                  alt="Personagem 1"
+                />
+              </button>
+              <button class="character-option" data-character="city_girl_1">
+                <img
+                  src="assets/thumbnails/city_girl_1.png"
+                  alt="Personagem 2"
+                />
+              </button>
+              <button class="character-option" data-character="city_men_3">
+                <img
+                  src="assets/thumbnails/city_men_3.png"
+                  alt="Personagem 3"
+                />
+              </button>
+            </div>
+
+            <label for="player-name-start">Como podemos te chamar?</label>
+            <input
+              id="player-name-start"
+              type="text"
+              maxlength="24"
+              placeholder="Digite seu nome"
+              autocomplete="off"
+            />
+            <p id="name-warning" class="hidden">
+              Digite seu nome antes de começar 🙂
+            </p>
+            <div class="panel-actions">
+              <button id="confirm-name-btn">Confirmar e Jogar</button>
+              <button class="back-btn" data-target="panel-menu">Voltar</button>
+            </div>
+          </div>
+
+          <!-- RANKING -->
+          <div id="panel-ranking" class="menu-panel hidden">
+            <h2>🏆 Ranking Top 10</h2>
+            <div id="ranking-list-menu"></div>
+            <button class="back-btn" data-target="panel-menu">Voltar</button>
+          </div>
+
+          <!-- REGRAS -->
+          <div id="panel-rules" class="menu-panel hidden">
+            <h2>📋 Como jogar</h2>
+
+            <ul>
+              <li><strong>Movimento:</strong> use as setas na tela.</li>
+
+              <li>
+                <strong>Objetivo:</strong> complete as 3 fases e derrote todos
+                os chefes.
+              </li>
+
+              <li>
+                <strong>Desafios:</strong> cada chefe faz 3 perguntas sobre o
+                tema da fase.
+              </li>
+
+              <li>
+                <strong>Tempo:</strong> responda rápido para ganhar mais pontos.
+              </li>
+
+              <li>
+                <strong>Vidas:</strong> respostas erradas ou tempo esgotado
+                fazem você perder uma vida.
+              </li>
+
+              <li>
+                <strong>Pontuação:</strong> acertos + velocidade + bônus pelas
+                vidas restantes.
+              </li>
+
+              <li>
+                <strong>Dica:</strong> converse com os personagens e leia os
+                murais para aprender mais.
+              </li>
+            </ul>
+
+            <button class="back-btn" data-target="panel-menu">Voltar</button>
+          </div>
+
+          <!-- SOBRE A EMPRESA -->
+          <div id="panel-empresa" class="menu-panel hidden">
+            <h2>🏢 Sobre a Empresa</h2>
+            <p>
+              A <strong>JS Grilo Contabilidade & Gestão</strong> é um escritório
+              de contabilidade com mais de <strong>duas décadas</strong> de
+              atuação no mercado, especializado em oferecer serviços de
+              contabilidade, assessoria fiscal, departamento pessoal,
+              planejamento tributário e consultoria empresarial.
+            </p>
+
+            <p class="link">
+              <strong>Instagram:</strong>
+              <a
+                href="https://www.instagram.com/jsgrilocontabilidade?igsh=MTdmdDNmMGx1Yjl6ZA=="
+                target="_blank"
+                rel="noopener noreferrer"
+                >@jsgrilocontabilidade</a
+              >
+            </p>
+
+            <p class="link">
+              <strong>Site:</strong>
+              <a
+                href="https://www.jsgrilo.com.br"
+                target="_blank"
+                rel="noopener noreferrer"
+                >www.jsgrilo.com.br</a
+              >
+            </p>
+            <button class="back-btn" data-target="panel-menu">Voltar</button>
+          </div>
+
+          <!-- CRIADOR -->
+          <div id="panel-criador" class="menu-panel hidden">
+            <h2>👤 Criador</h2>
+            <p>
+              Olá! Me chamo <strong>Matheus Sena</strong>, ex-estagiário do
+              <strong>Sebrae</strong> e estudante de
+              <strong
+                >Tecnologia em Análise e Desenvolvimento de Sistemas
+                (IFRN)</strong
+              >
+              e <strong>Engenharia de Software (UNOPAR)</strong>. Desenvolvi
+              este jogo para mostrar como a <strong>gamificação</strong> pode
+              tornar o aprendizado mais divertido e acessível.
+            </p>
+
+            <p class="link">
+              <strong>Instagram:</strong>
+              <a
+                href="https://www.instagram.com/__matheussena?igsh=MXdwbmloNDM1c2VpZQ=="
+                target="_blank"
+                rel="noopener noreferrer"
+                >@__matheussena</a
+              >
+            </p>
+
+            <p class="link">
+              <strong>Github:</strong>
+              <a
+                href="https://github.com/matheussena45"
+                target="_blank"
+                rel="noopener noreferrer"
+                >github.com/matheussena45</a
+              >
+            </p>
+            <button class="back-btn" data-target="panel-menu">Voltar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+</html>
