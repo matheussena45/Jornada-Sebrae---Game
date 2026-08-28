@@ -1591,258 +1591,153 @@ function showPhaseIntro(phaseConfig, onComplete) {
 // - Outro clique avança para a próxima fala.
 // - Também avança automaticamente após o duration.
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+// NARRATIVA DAS FASES DE TRANSIÇÃO (Unificada com o novo Narrador)
+// ---------------------------------------------------------
 function startNarrative(scene, narrative, onComplete) {
   if (!Array.isArray(narrative) || narrative.length === 0) {
     scene.inputManager.setEnabled(true);
-
-    if (onComplete) {
-      onComplete();
-    }
-
+    if (onComplete) onComplete();
     return;
   }
 
-  const mySession = GameData.sessionId;
-
-  const overlay = document.getElementById("narrative-overlay");
-  const box = document.getElementById("narrative-box");
-  const speakerEl = document.getElementById("narrative-speaker");
-  const textEl = document.getElementById("narrative-text");
-  const continueEl = document.getElementById("narrative-continue");
-
-  let dialogueIndex = 0;
-  let typeInterval = null;
-  let autoAdvanceTimeout = null;
-
-  let isTyping = false;
-  let currentText = "";
-  let currentCharIndex = 0;
-  let currentDialogueFinished = false;
-  let narrativeFinished = false;
-
-  function isStale() {
-    return mySession !== GameData.sessionId || !scene.scene.isActive();
-  }
-
-  function clearNarrativeTimers() {
-    clearInterval(typeInterval);
-    clearTimeout(autoAdvanceTimeout);
-
-    typeInterval = null;
-    autoAdvanceTimeout = null;
-  }
-
-  function getSpeaker(dialogue) {
-    if (dialogue.type === "player") {
-      return ` ${GameData.playerName}`;
-    }
-
-    return "📖 Narrador";
-  }
-
-  function applyDialogueStyle(dialogue) {
-    box.classList.remove("player-dialogue", "narrator-dialogue");
-
-    if (dialogue.type === "player") {
-      box.classList.add("player-dialogue");
-    } else {
-      box.classList.add("narrator-dialogue");
-    }
-  }
-
-  function completeTyping() {
-    if (!isTyping) {
-      return;
-    }
-
-    clearInterval(typeInterval);
-    typeInterval = null;
-
-    textEl.textContent = currentText;
-    currentCharIndex = currentText.length;
-
-    isTyping = false;
-    currentDialogueFinished = true;
-
-    continueEl.classList.add("visible");
-
-    scheduleAutoAdvance();
-  }
-
-  function scheduleAutoAdvance() {
-    clearTimeout(autoAdvanceTimeout);
-
-    const dialogue = narrative[dialogueIndex];
-
-    const duration = dialogue.duration ?? NARRATIVE_DEFAULT_DURATION_MS;
-
-    autoAdvanceTimeout = setTimeout(() => {
-      if (isStale() || narrativeFinished) {
-        return;
-      }
-
-      goToNextDialogue();
-    }, duration);
-  }
-
-  function typeDialogueText(text) {
-    clearInterval(typeInterval);
-    clearTimeout(autoAdvanceTimeout);
-
-    currentText = text;
-    currentCharIndex = 0;
-    currentDialogueFinished = false;
-    isTyping = true;
-
-    textEl.textContent = "";
-    continueEl.classList.remove("visible");
-
-    typeInterval = setInterval(() => {
-      if (isStale()) {
-        clearNarrativeTimers();
-        return;
-      }
-
-      currentCharIndex += 1;
-      textEl.textContent = currentText.slice(0, currentCharIndex);
-      playSfx(SFX.type); // <-- aqui
-
-      if (currentCharIndex >= currentText.length) {
-        clearInterval(typeInterval);
-        typeInterval = null;
-        isTyping = false;
-        currentDialogueFinished = true;
-        continueEl.classList.add("visible");
-        scheduleAutoAdvance();
-      }
-    }, NARRATIVE_TYPE_SPEED_MS);
-  }
-
-  function showDialogue(index) {
-    if (isStale() || narrativeFinished) {
-      return;
-    }
-
-    const dialogue = narrative[index];
-
-    if (!dialogue) {
-      finishNarrative();
-      return;
-    }
-
-    applyDialogueStyle(dialogue);
-
-    speakerEl.textContent = getSpeaker(dialogue);
-
-    /*
-     * Permite usar {playerName} dentro do próprio texto,
-     * caso você queira citar o jogador na frase.
-     */
-    const resolvedText = String(dialogue.text ?? "").replaceAll(
-      "{playerName}",
-      GameData.playerName,
-    );
-
-    typeDialogueText(resolvedText);
-  }
-
-  function goToNextDialogue() {
-    if (isStale() || narrativeFinished) {
-      return;
-    }
-
-    clearNarrativeTimers();
-
-    dialogueIndex += 1;
-
-    if (dialogueIndex >= narrative.length) {
-      finishNarrative();
-      return;
-    }
-
-    showDialogue(dialogueIndex);
-  }
-
-  function handleNarrativeClick() {
-    if (isStale() || narrativeFinished) {
-      return;
-    }
-
-    /*
-     * Primeiro clique:
-     * completa imediatamente o texto.
-     */
-    if (isTyping) {
-      completeTyping();
-      return;
-    }
-
-    /*
-     * Segundo clique:
-     * avança para a próxima fala.
-     */
-    if (currentDialogueFinished) {
-      goToNextDialogue();
-    }
-  }
-
-  function finishNarrative() {
-    if (narrativeFinished) {
-      return;
-    }
-
-    narrativeFinished = true;
-
-    clearNarrativeTimers();
-
-    overlay.removeEventListener("click", handleNarrativeClick);
-
-    overlay.classList.add("hidden");
-
-    box.classList.remove("player-dialogue", "narrator-dialogue");
-
-    speakerEl.textContent = "";
-    textEl.textContent = "";
-    continueEl.classList.remove("visible");
-
-    /*
-     * Só libera o jogador se esta ainda for
-     * a mesma partida/cena.
-     */
-    if (!isStale()) {
-      scene.inputManager.setEnabled(true);
-    }
-
-    if (onComplete && !isStale()) {
-      onComplete();
-    }
-  }
-
-  // Impede que o personagem continue deslizando.
+  // Bloqueia o movimento e as ações do jogador durante a historinha
   scene.player.setVelocityX(0);
-
-  // Bloqueia o teclado enquanto a narrativa ocorre.
   scene.inputManager.setEnabled(false);
 
-  overlay.classList.remove("hidden");
+  let currentIndex = 0;
 
-  overlay.addEventListener("click", handleNarrativeClick);
+  // Função interna que puxa a fala atual e agenda a próxima
+  function proximaFala() {
+    // Verificação de fim: se passou da última fala, libera o jogo
+    if (currentIndex >= narrative.length) {
+      scene.inputManager.setEnabled(true);
+      if (onComplete) onComplete();
+      return;
+    }
 
-  /*
-   * Quando a cena for encerrada ou reiniciada,
-   * remove timers e eventos da narrativa.
-   */
-  scene.events.once("shutdown", () => {
-    narrativeFinished = true;
+    const dialogue = narrative[currentIndex];
+    currentIndex++;
 
-    clearNarrativeTimers();
+    // 1. Descobre quem está falando
+    const isPlayer = dialogue.type === "player";
+    const nomeFalante = isPlayer ? GameData.playerName : "Narrador";
 
-    overlay.removeEventListener("click", handleNarrativeClick);
+    // 2. Formata o texto final (adicionando o nome de quem fala no topo e processando variáveis)
+    let textoBruto = String(dialogue.text ?? "").replaceAll("{playerName}", GameData.playerName);
+    const textoFinal = `${nomeFalante}:\n"${textoBruto}"`;
 
-    overlay.classList.add("hidden");
+    // 3. Define as imagens (se no futuro você colocar a imagem do jogador, é só trocar no if)
+    let idleImg = "narrador_idle";
+    let talkImg = "narrador_talk";
+    
+    /* Exemplo para o futuro, se quiser colocar a foto do bonequinho do jogador falando:
+    if (isPlayer) {
+      idleImg = "player_rosto_fechado";
+      talkImg = "player_rosto_falando";
+    }
+    */
+
+    // 4. Chama a ferramenta de popup animada!
+    chamarNarrador(
+      scene,
+      idleImg,
+      talkImg,
+      null, // Sem áudio específico pré-carregado nas transições no momento
+      textoFinal,
+      () => {
+        // A MÁGICA: O callback 'onComplete' da caixa de texto chama a próxima fala da lista
+        proximaFala();
+      }
+    );
+  }
+
+  // Dá o pontapé inicial chamando a primeira fala do array
+  proximaFala();
+}
+
+// ---------------------------------------------------------
+// SISTEMA DO NARRADOR ANIMADO (Global)
+// ---------------------------------------------------------
+function chamarNarrador(cena, imgIdleKey, imgTalkKey, audioKey, texto, onComplete) {
+  const overlay = cena.add.rectangle(480, 270, 960, 540, 0x000000, 0.8)
+    .setOrigin(0.5).setDepth(100).setScrollFactor(0).setInteractive();
+
+  const box = cena.add.graphics().setDepth(101).setScrollFactor(0);
+  box.fillStyle(0x002B54, 1);
+  box.lineStyle(4, 0xFF8F00, 1);
+  box.fillRoundedRect(180, 100, 600, 340, 16);
+  box.strokeRoundedRect(180, 100, 600, 340, 16);
+
+  const avatarIdle = cena.add.image(480, 170, imgIdleKey).setDepth(102).setScrollFactor(0);
+  const avatarTalk = cena.add.image(480, 170, imgTalkKey).setDepth(102).setScrollFactor(0).setVisible(false);
+
+  const messageText = cena.add.text(480, 250, "", {
+    fontSize: '20px',
+    fontFamily: 'Arial',
+    color: '#F4F7F9',
+    align: 'center',
+    wordWrap: { width: 540 }
+  }).setOrigin(0.5, 0).setDepth(102).setScrollFactor(0);
+
+  const hintText = cena.add.text(480, 410, "Clique para continuar ➡", {
+    fontSize: '16px', fontStyle: 'italic', color: '#FFB347'
+  }).setOrigin(0.5).setDepth(102).setScrollFactor(0).setAlpha(0);
+
+  let voice;
+  if (audioKey && cena.cache.audio.exists(audioKey)) {
+    voice = cena.sound.add(audioKey);
+    voice.play();
+  }
+
+  let isTalking = true;
+  const talkInterval = setInterval(() => {
+    if (isTalking) {
+      avatarIdle.setVisible(!avatarIdle.visible);
+      avatarTalk.setVisible(!avatarIdle.visible);
+    }
+  }, 150);
+
+  let charIndex = 0;
+  let isTyping = true;
+  const typeInterval = setInterval(() => {
+    charIndex++;
+    messageText.setText(texto.slice(0, charIndex));
+    playSfx(SFX.type);
+    
+    if (charIndex >= texto.length) {
+      clearInterval(typeInterval);
+      clearInterval(talkInterval);
+      avatarIdle.setVisible(true);
+      avatarTalk.setVisible(false);
+      isTyping = false;
+      isTalking = false;
+      hintText.setAlpha(1);
+    }
+  }, 40);
+
+  overlay.on('pointerdown', () => {
+    if (isTyping) {
+      clearInterval(typeInterval);
+      clearInterval(talkInterval);
+      avatarIdle.setVisible(true);
+      avatarTalk.setVisible(false);
+      messageText.setText(texto);
+      isTyping = false;
+      isTalking = false;
+      hintText.setAlpha(1);
+    } else {
+      if (voice && voice.isPlaying) voice.stop(); 
+      overlay.destroy();
+      box.destroy();
+      avatarIdle.destroy();
+      avatarTalk.destroy();
+      messageText.destroy();
+      hintText.destroy();
+
+      if (onComplete) onComplete();
+    }
   });
-
-  showDialogue(dialogueIndex);
 }
 
 // ---------------------------------------------------------
@@ -1854,130 +1749,158 @@ class MapScene extends Phaser.Scene {
   }
 
   preload() {
-    // Carrega a imagem do mapa que você vai gerar (salve na pasta backgrounds)
-    this.load.image("map_bg", "assets/backgrounds/map_bg.png");
+    if (!this.textures.exists("map_bg")) {
+      this.load.image("map_bg", "assets/backgrounds/map_bg.png");
+    }
+    if (!this.textures.exists("icon_locked")) {
+      this.load.image("icon_locked", "assets/icons/cadeado.png");
+      this.load.image("icon_check", "assets/icons/check.png");
+    }
+    // --- CARREGANDO OS ASSETS DO NARRADOR ---
+    if (!this.textures.exists("narrador_idle")) {
+      this.load.image("narrador_idle", "assets/characters/narrador_fechado.png");
+      this.load.image("narrador_talk", "assets/characters/narrador_falando.png");
+    }
+    if (!this.cache.audio.exists("voz_mapa")) {
+      this.load.audio("voz_mapa", "assets/audio/voz_mapa.mp3"); 
+    }
   }
 
   create() {
-    // Esconde o HUD e os botões de movimento na tela do mapa
-        const hud = document.getElementById("hud"); // Verifique se o ID do container do HUD no seu HTML é esse mesmo
-        if (hud) hud.style.display = "none";
+    const hud = document.getElementById("hud");
+    if (hud) hud.style.display = "none";
+    const btnLeft = document.getElementById("btn-left");
+    if (btnLeft) btnLeft.style.display = "none";
+    const btnRight = document.getElementById("btn-right");
+    if (btnRight) btnRight.style.display = "none";
 
-        const btnLeft = document.getElementById("btn-left");
-        if (btnLeft) btnLeft.style.display = "none";
-
-        const btnRight = document.getElementById("btn-right");
-        if (btnRight) btnRight.style.display = "none";
-    // 1. Coloca o mapa de fundo
-    const bg = this.add.image(480, 270, "map_bg");
+    const bg = this.add.image(480, 270, "map_bg").setDepth(0);
     bg.setDisplaySize(960, 540);
 
-    // 2. Define as posições de cada ilha no mapa (você pode ajustar os valores de x e y depois para bater certinho com sua arte)
     const islands = [
-      { name: "SEJA BEM VINDO", x: 165, y: 430 },
-      { name: "TRILHA DIGITAL", x:560, y: 180 },
-      { name: "FINANÇAS NA MÃO", x: 780, y: 350 }
+      { id: 0, name: "FINECAP", x: 165, y: 430, arrowX: 165, arrowY: 200, iconX: 170, iconY: 365 },
+      { id: 1, name: "TRILHA DIGITAL", x: 510, y: 110, arrowX: 600, arrowY: 100, iconX: 555, iconY: 135 },
+      { id: 2, name: "FINANÇAS NA MÃO", x: 830, y: 430, arrowX: 780, arrowY: 270, iconX: 820, iconY: 350 }
     ];
 
-    islands.forEach((island, index) => {
-      // Cria uma zona interativa invisível em cima da ilha
-      const zone = this.add.zone(island.x, island.y, 180, 150).setInteractive({ useHandCursor: true });
+    const pathGraphics = this.add.graphics().setDepth(1);
+    pathGraphics.lineStyle(4, 0xffe27a, 0.8);
 
-      // Adiciona o nome da ilha embaixo dela (estilo plaquinha)
-      // 1. Criar o texto PRIMEIRO (sem background) para o Phaser calcular o tamanho
-      const labelText = this.add.text(island.x, island.y + 60, island.name, {
-        fontSize: '18px',
-        fontStyle: 'bold',
-        color: '#F4F7F9'
-      }).setOrigin(0.5).setDepth(2); // setDepth(2) garante que o texto fique por cima da placa
+    for (let i = 0; i < islands.length - 1; i++) {
+      this.drawDottedLine(pathGraphics, islands[i].x, islands[i].y, islands[i + 1].x, islands[i + 1].y);
+    }
 
-      // 2. Calcular o tamanho da placa com base no tamanho do texto + padding
-      const paddingX = 24; // Equivalente a 12 de cada lado
-      const paddingY = 12; // Equivalente a 6 de cada lado
-      const bgWidth = labelText.width + paddingX;
-      const bgHeight = labelText.height + paddingY;
+    islands.forEach((island) => {
+      let status = "locked";
+      if (island.id < GameData.phaseIndex) {
+        status = "completed";
+      } else if (island.id === GameData.phaseIndex) {
+        status = "current";
+      }
 
-      // 3. Desenhar a placa arredondada usando Graphics
-      const bgGraphics = this.add.graphics();
-      bgGraphics.fillStyle(0x002B54, 1); // 0x002B54 é o seu azul corporativo, o 1 é a opacidade
+      const zone = this.add.zone(island.x, island.y, 160, 140)
+        .setInteractive({ useHandCursor: true })
+        .setDepth(20);
 
-      // O x e y começam no canto superior esquerdo, então subtraímos metade da largura/altura para centralizar
-      bgGraphics.fillRoundedRect(
-        island.x - (bgWidth / 2), 
-        (island.y + 60) - (bgHeight / 2), 
-        bgWidth, 
-        bgHeight, 
-        8 // <-- AQUI é o seu "border-radius" (em pixels)
-      ).setDepth(1); // setDepth(1) garante que fique atrás do texto, mas na frente do mapa
+      this.criarPlacaArredondada(island.x, island.y + 60, island.name, 0x002b54, "#F4F7F9");
 
-      // Seta indicadora pulando na ilha atual
-      if (index === GameData.phaseIndex) {
-        const arrow = this.add.text(island.x, island.y - 230, "⬇", { 
-          fontSize: '48px', 
-          color: '#FF8F00', // Dourado/Laranja de destaque
-          fontStyle: 'bold'
-        }).setOrigin(0.5);
+      if (status === "completed") {
+        this.add.image(island.iconX, island.iconY, "icon_check").setOrigin(0.5).setDepth(5).setScale(0.5);
+      } else if (status === "locked") {
+        this.add.image(island.iconX, island.iconY, "icon_locked").setOrigin(0.5).setDepth(5).setScale(0.1);
+      } else if (status === "current") {
+        const arrow = this.add.text(island.arrowX, island.arrowY, "⬇", {
+          fontSize: "60px", color: "#FF8F00", fontStyle: "bold"
+        }).setOrigin(0.5).setDepth(10);
 
         this.tweens.add({
-          targets: arrow,
-          y: island.y - 205,
-          duration: 600,
-          yoyo: true,
-          repeat: -1,
-          ease: 'Sine.easeInOut'
+          targets: arrow, y: island.arrowY + 15, duration: 600, yoyo: true, repeat: -1, ease: "Sine.easeInOut"
         });
       }
 
-      // Lógica do clique na ilha
       zone.on('pointerdown', () => {
-        if (index === GameData.phaseIndex) {
-          // Clicou na ilha certa: entra na fase
+        if (status === "current") {
           playSfx(SFX.type);
           this.cameras.main.fadeOut(300, 0, 0, 0);
           this.cameras.main.once("camerafadeoutcomplete", () => {
-            this.scene.start("PhaseScene", { phaseIndex: index });
+            this.scene.start("PhaseScene", { phaseIndex: island.id });
           });
-        } else if (index > GameData.phaseIndex) {
-          // Ilha bloqueada
-          this.showFeedbackMessage(island.x, island.y, "🔒 Ilha Bloqueada! Complete as anteriores.", '#D32F2F');
+        } else if (status === "completed") {
+          this.showFeedbackMessage(island.x, island.y - 40, "✅ Fase já concluída!", '#2E7D32');
         } else {
-          // Ilha já concluída
-          this.showFeedbackMessage(island.x, island.y, "✅ Etapa já concluída!", '#2E7D32');
+          this.showFeedbackMessage(island.x, island.y - 40, "🔒 Ilha Bloqueada! Complete a anterior.", '#D32F2F');
         }
       });
     });
+
+    // --- LÓGICA DO NARRADOR POR FASE ---
+    let textoNarrador = "";
+    let audioNarrador = null; // Se você gravar áudios para as fases 2 e 3, pode carregar no preload e trocar aqui
+
+    if (GameData.phaseIndex === 0) {
+      textoNarrador = `Olá, ${GameData.playerName}! Seja bem-vindo à sua jornada. Clique na primeira ilha desbloqueada para iniciar seu treinamento!`;
+      audioNarrador = "voz_mapa";
+    } else if (GameData.phaseIndex === 1) {
+      textoNarrador = "Muito bem! Você concluiu a primeira etapa. A Trilha Digital já está disponível para o próximo desafio.";
+      audioNarrador = null; 
+    } else if (GameData.phaseIndex === 2) {
+      textoNarrador = "Excelente progresso! A última etapa, Finanças na Mão, está liberada. Vamos lá!";
+      audioNarrador = null;
+    }
+
+    // Só chama a caixa de diálogo se houver texto para aquela fase
+    if (textoNarrador !== "") {
+      chamarNarrador(this, "narrador_idle", "narrador_talk", audioNarrador, textoNarrador, () => {
+        console.log("Narrador terminou de falar!");
+      });
+    }
+  }
+
+  // --- FUNÇÕES AUXILIARES ---
+  criarPlacaArredondada(x, y, texto, corFundo, corTexto) {
+    const label = this.add.text(x, y, texto, { fontSize: "18px", fontStyle: "bold", color: corTexto }).setOrigin(0.5).setDepth(6);
+    const bg = this.add.graphics().setDepth(5);
+    bg.fillStyle(corFundo, 1);
+    bg.fillRoundedRect(x - label.width / 2 - 12, y - label.height / 2 - 6, label.width + 24, label.height + 12, 8);
+  }
+
+  drawDottedLine(graphics, x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const dashLength = 10;
+    const gapLength = 8;
+    let currentDist = 0;
+
+    while (currentDist < dist) {
+      const startX = x1 + (dx * currentDist) / dist;
+      const startY = y1 + (dy * currentDist) / dist;
+      const endDist = Math.min(currentDist + dashLength, dist);
+      const endX = x1 + (dx * endDist) / dist;
+      const endY = y1 + (dy * endDist) / dist;
+
+      graphics.lineBetween(startX, startY, endX, endY);
+      currentDist += dashLength + gapLength;
+    }
   }
 
   showFeedbackMessage(x, y, text, color) {
     if (this.isShowingMessage) return;
     this.isShowingMessage = true;
-    playSfx(SFX.tick); // Um som de erro/aviso
+    playSfx(SFX.tick);
+    const safeX = Phaser.Math.Clamp(x, 220, 740);
 
-    const msg = this.add.text(x, y - 20, text, {
-      fontSize: '16px',
-      fontStyle: 'bold',
-      color: '#ffffff',
-      backgroundColor: color,
-      padding: { x: 10, y: 5 }
-    }).setOrigin(0.5).setAlpha(0);
+    const msg = this.add.text(safeX, y, text, {
+      fontSize: '14px', fontStyle: 'bold', color: '#ffffff', backgroundColor: color, padding: { x: 10, y: 6 }
+    }).setOrigin(0.5).setAlpha(0).setDepth(20);
 
-    // Animação de subir e sumir
     this.tweens.add({
-      targets: msg,
-      y: y - 50,
-      alpha: 1,
-      duration: 300,
-      ease: 'Power2',
+      targets: msg, y: y - 20, alpha: 1, duration: 300, ease: 'Power2',
       onComplete: () => {
-        this.time.delayedCall(1200, () => {
+        this.time.delayedCall(1000, () => {
           this.tweens.add({
-            targets: msg,
-            alpha: 0,
-            duration: 300,
-            onComplete: () => {
-              msg.destroy();
-              this.isShowingMessage = false;
-            }
+            targets: msg, alpha: 0, duration: 300,
+            onComplete: () => { msg.destroy(); this.isShowingMessage = false; }
           });
         });
       }
