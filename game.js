@@ -1778,9 +1778,9 @@ class MapScene extends Phaser.Scene {
     bg.setDisplaySize(960, 540);
 
     const islands = [
-      { id: 0, name: "FINECAP", x: 165, y: 430, arrowX: 165, arrowY: 200, iconX: 170, iconY: 365 },
-      { id: 1, name: "TRILHA DIGITAL", x: 510, y: 110, arrowX: 600, arrowY: 100, iconX: 555, iconY: 135 },
-      { id: 2, name: "FINANÇAS NA MÃO", x: 830, y: 430, arrowX: 780, arrowY: 270, iconX: 820, iconY: 350 }
+      { id: 0, name: "FINECAP", x: 175, y: 450, arrowX: 190, arrowY: 210, iconX: 170, iconY: 365 },
+      { id: 1, name: "TRILHA DIGITAL", x: 510, y: 200, arrowX: 510, arrowY: 60, iconX: 510, iconY: 135 },
+      { id: 2, name: "ACELERADOR DIGITAL", x: 830, y: 450, arrowX: 840, arrowY: 240, iconX: 820, iconY: 400 }
     ];
 
     const pathGraphics = this.add.graphics().setDepth(1);
