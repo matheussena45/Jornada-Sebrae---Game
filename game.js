@@ -38,12 +38,16 @@ const SFX = {
   bgm: new Audio("assets/audio/bgm.mp3"),
   type: new Audio("assets/audio/type_blip.wav"),
   tick: new Audio("assets/audio/countdown_tick.wav"),
+  locked: new Audio("assets/audio/locked.mp3"),
+  unlock: new Audio("assets/audio/unlock.mp3")
 };
 SFX.bgm.loop = true;
-SFX.bgm.volume = 0.2; // volume moderado — não briga com os efeitos
+SFX.bgm.volume = 0.2;
 SFX.type.volume = 0.03;
 SFX.tick.volume = 1.0;
 SFX.tick.loop = false;
+SFX.locked.volume = 0.6;
+SFX.unlock.volume = 0.8;
 
 function playSfx(audio) {
   try {
@@ -110,6 +114,7 @@ function resetGameData() {
   GameData.paused = false;
   GameData.sessionId += 1;
   GameData.hasEnded = false;
+  GameData.lastPhaseIndex = 0;
 }
 
 // ---------------------------------------------------------
@@ -134,7 +139,7 @@ const PHASES = [
     bossY: 478,
     doorX: 1770,
     groundY: 480,
-    showExitArrow: true,
+    showExitArrow: false,
     exitDirection: "forward", // seta aponta pra frente
     characterScale: 1.8,
     infoSpots: [
@@ -1741,7 +1746,7 @@ function chamarNarrador(cena, imgIdleKey, imgTalkKey, audioKey, texto, onComplet
 }
 
 // ---------------------------------------------------------
-// CENA DO MAPA DAS ILHAS
+// CENA DO MAPA DAS ILHAS (Com Animação de Desbloqueio)
 // ---------------------------------------------------------
 class MapScene extends Phaser.Scene {
   constructor() {
@@ -1756,7 +1761,10 @@ class MapScene extends Phaser.Scene {
       this.load.image("icon_locked", "assets/icons/cadeado.png");
       this.load.image("icon_check", "assets/icons/check.png");
     }
-    // --- CARREGANDO OS ASSETS DO NARRADOR ---
+    // Ícone do barquinho para a animação
+    if (!this.textures.exists("icon_boat")) {
+      this.load.image("icon_boat", "assets/icons/barco.png"); 
+    }
     if (!this.textures.exists("narrador_idle")) {
       this.load.image("narrador_idle", "assets/characters/narrador_fechado.png");
       this.load.image("narrador_talk", "assets/characters/narrador_falando.png");
@@ -1790,69 +1798,152 @@ class MapScene extends Phaser.Scene {
       this.drawDottedLine(pathGraphics, islands[i].x, islands[i].y, islands[i + 1].x, islands[i + 1].y);
     }
 
+    // Prevenção caso o jogo comece direto no mapa
+    if (GameData.lastPhaseIndex === undefined) GameData.lastPhaseIndex = GameData.phaseIndex;
+    
+    // Verifica se acabamos de passar de fase
+    const isUnlocking = GameData.lastPhaseIndex < GameData.phaseIndex;
+    let targetIslandObj = null; // Guardará a referência da nova ilha
+
     islands.forEach((island) => {
       let status = "locked";
       if (island.id < GameData.phaseIndex) {
         status = "completed";
       } else if (island.id === GameData.phaseIndex) {
-        status = "current";
+        status = isUnlocking ? "unlocking" : "current";
       }
 
-      const zone = this.add.zone(island.x, island.y, 160, 140)
-        .setInteractive({ useHandCursor: true })
-        .setDepth(20);
-
+      const zone = this.add.zone(island.x, island.y, 160, 140).setInteractive({ useHandCursor: true }).setDepth(20);
       this.criarPlacaArredondada(island.x, island.y + 60, island.name, 0x002b54, "#F4F7F9");
 
       if (status === "completed") {
         this.add.image(island.iconX, island.iconY, "icon_check").setOrigin(0.5).setDepth(5).setScale(0.5);
+      
       } else if (status === "locked") {
-        this.add.image(island.iconX, island.iconY, "icon_locked").setOrigin(0.5).setDepth(5).setScale(0.1);
+        // ADICIONAMOS 'island.lockedImg =' PARA PODER CONTROLAR O CADEADO DEPOIS
+        island.lockedImg = this.add.image(island.iconX, island.iconY, "icon_locked").setOrigin(0.5).setDepth(5).setScale(0.1);
+      
+      } else if (status === "unlocking") {
+        targetIslandObj = island; // Salva para a animação
+        
+        // Desenha o cadeado (que vai quebrar) e a seta (invisível por enquanto)
+        island.padlockImg = this.add.image(island.iconX, island.iconY, "icon_locked").setOrigin(0.5).setDepth(5).setScale(0.1);
+        
+        island.arrowText = this.add.text(island.arrowX, island.arrowY, "⬇", {
+          fontSize: "60px", color: "#FF8F00", fontStyle: "bold"
+        }).setOrigin(0.5).setDepth(10).setVisible(false);
+
+        this.tweens.add({
+          targets: island.arrowText, y: island.arrowY + 15, duration: 600, yoyo: true, repeat: -1, ease: "Sine.easeInOut"
+        });
+      
       } else if (status === "current") {
         const arrow = this.add.text(island.arrowX, island.arrowY, "⬇", {
           fontSize: "60px", color: "#FF8F00", fontStyle: "bold"
         }).setOrigin(0.5).setDepth(10);
-
-        this.tweens.add({
-          targets: arrow, y: island.arrowY + 15, duration: 600, yoyo: true, repeat: -1, ease: "Sine.easeInOut"
-        });
+        this.tweens.add({ targets: arrow, y: island.arrowY + 15, duration: 600, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
       }
 
       zone.on('pointerdown', () => {
-        if (status === "current") {
+        // Trava cliques enquanto a animação do barco estiver rodando
+        if (isUnlocking && GameData.lastPhaseIndex < GameData.phaseIndex) return;
+
+        if (status === "current" || status === "unlocking") {
           playSfx(SFX.type);
           this.cameras.main.fadeOut(300, 0, 0, 0);
           this.cameras.main.once("camerafadeoutcomplete", () => {
             this.scene.start("PhaseScene", { phaseIndex: island.id });
           });
         } else if (status === "completed") {
+          playSfx(SFX.type); // Som suave para fase já concluída
           this.showFeedbackMessage(island.x, island.y - 40, "✅ Fase já concluída!", '#2E7D32');
         } else {
+          playSfx(SFX.locked); // Toca o som de corrente
           this.showFeedbackMessage(island.x, island.y - 40, "🔒 Ilha Bloqueada! Complete a anterior.", '#D32F2F');
+
+          // --- ANIMAÇÃO DO CADEADO BALANÇANDO ---
+          // Verifica se a imagem existe e se ELA JÁ NÃO ESTÁ balançando (evita bugar se clicar muito rápido)
+          if (island.lockedImg && !this.tweens.isTweening(island.lockedImg)) {
+            this.tweens.add({
+              targets: island.lockedImg,
+              angle: { from: -15, to: 15 }, // Balança de -15 a 15 graus
+              duration: 50,                 // Bem rápido pra parecer uma batida seca
+              yoyo: true,
+              repeat: 4,                    // Vai e volta 4 vezes
+              onComplete: () => {
+                island.lockedImg.setAngle(0); // Garante que volta a ficar perfeitamente reto no final
+              }
+            });
+          }
         }
       });
     });
 
-    // --- LÓGICA DO NARRADOR POR FASE ---
-    let textoNarrador = "";
-    let audioNarrador = null; // Se você gravar áudios para as fases 2 e 3, pode carregar no preload e trocar aqui
+    // --- FUNÇÃO QUE DISPARA O NARRADOR ---
+    const dispararNarrador = () => {
+      let textoNarrador = "";
+      if (GameData.phaseIndex === 0) {
+        textoNarrador = `Olá, ${GameData.playerName}! Seja bem-vindo à sua jornada. Clique na primeira ilha desbloqueada para iniciar!`;
+      } else if (GameData.phaseIndex === 1) {
+        textoNarrador = "Muito bem! Você concluiu a primeira etapa. A Trilha Digital já está disponível para o próximo desafio.";
+      } else if (GameData.phaseIndex === 2) {
+        textoNarrador = "Excelente progresso! A última etapa, Finanças na Mão, está liberada. Vamos lá!";
+      }
 
-    if (GameData.phaseIndex === 0) {
-      textoNarrador = `Olá, ${GameData.playerName}! Seja bem-vindo à sua jornada. Clique na primeira ilha desbloqueada para iniciar seu treinamento!`;
-      audioNarrador = "voz_mapa";
-    } else if (GameData.phaseIndex === 1) {
-      textoNarrador = "Muito bem! Você concluiu a primeira etapa. A Trilha Digital já está disponível para o próximo desafio.";
-      audioNarrador = null; 
-    } else if (GameData.phaseIndex === 2) {
-      textoNarrador = "Excelente progresso! A última etapa, Finanças na Mão, está liberada. Vamos lá!";
-      audioNarrador = null;
-    }
+      if (textoNarrador !== "") {
+        chamarNarrador(this, "narrador_idle", "narrador_talk", null, textoNarrador);
+      }
+    };
 
-    // Só chama a caixa de diálogo se houver texto para aquela fase
-    if (textoNarrador !== "") {
-      chamarNarrador(this, "narrador_idle", "narrador_talk", audioNarrador, textoNarrador, () => {
-        console.log("Narrador terminou de falar!");
+    // --- LÓGICA DO BARCO E DA ANIMAÇÃO DO CADEADO ---
+    if (isUnlocking && targetIslandObj) {
+      const startIsland = islands[GameData.lastPhaseIndex];
+      
+      // 1. Cria o barco na ilha anterior
+      const barco = this.add.image(startIsland.x, startIsland.y, "icon_boat").setDepth(15).setScale(0.1);
+
+      // 2. Viagem do barco até a nova ilha
+      this.tweens.add({
+        targets: barco,
+        x: targetIslandObj.x,
+        y: targetIslandObj.y,
+        duration: 2500,
+        ease: 'Sine.easeInOut',
+        onComplete: () => {
+          barco.destroy(); // Barco some ao chegar
+          
+          // 3. Animação do Cadeado (Treme e explode)
+          if (targetIslandObj.padlockImg) {
+            playSfx(SFX.unlock);
+            this.tweens.add({
+              targets: targetIslandObj.padlockImg,
+              angle: { from: -20, to: 20 }, // Faz tremer pros lados
+              duration: 50,
+              yoyo: true,
+              repeat: 5,
+              onComplete: () => {
+                // Cresce um pouco e desaparece (fade out)
+                this.tweens.add({
+                  targets: targetIslandObj.padlockImg,
+                  scale: 0.2, // cresce sutilmente
+                  alpha: 0,
+                  duration: 300,
+                  onComplete: () => {
+                    targetIslandObj.padlockImg.destroy();
+                    // 4. Mostra a Seta e libera o narrador
+                    targetIslandObj.arrowText.setVisible(true);
+                    GameData.lastPhaseIndex = GameData.phaseIndex; // Atualiza a trava
+                    dispararNarrador();
+                  }
+                });
+              }
+            });
+          }
+        }
       });
+    } else {
+      // Se não houver animação nova (ex: acabou de iniciar o jogo), puxa o narrador direto
+      dispararNarrador();
     }
   }
 
@@ -1868,26 +1959,24 @@ class MapScene extends Phaser.Scene {
     const dx = x2 - x1;
     const dy = y2 - y1;
     const dist = Math.sqrt(dx * dx + dy * dy);
-    const dashLength = 10;
-    const gapLength = 8;
     let currentDist = 0;
-
     while (currentDist < dist) {
       const startX = x1 + (dx * currentDist) / dist;
       const startY = y1 + (dy * currentDist) / dist;
-      const endDist = Math.min(currentDist + dashLength, dist);
+      const endDist = Math.min(currentDist + 10, dist);
       const endX = x1 + (dx * endDist) / dist;
       const endY = y1 + (dy * endDist) / dist;
-
       graphics.lineBetween(startX, startY, endX, endY);
-      currentDist += dashLength + gapLength;
+      currentDist += 18;
     }
   }
 
   showFeedbackMessage(x, y, text, color) {
     if (this.isShowingMessage) return;
     this.isShowingMessage = true;
-    playSfx(SFX.tick);
+
+    // O áudio foi removido daqui, pois agora é gerenciado pelo clique
+
     const safeX = Phaser.Math.Clamp(x, 220, 740);
 
     const msg = this.add.text(safeX, y, text, {
@@ -1898,10 +1987,7 @@ class MapScene extends Phaser.Scene {
       targets: msg, y: y - 20, alpha: 1, duration: 300, ease: 'Power2',
       onComplete: () => {
         this.time.delayedCall(1000, () => {
-          this.tweens.add({
-            targets: msg, alpha: 0, duration: 300,
-            onComplete: () => { msg.destroy(); this.isShowingMessage = false; }
-          });
+          this.tweens.add({ targets: msg, alpha: 0, duration: 300, onComplete: () => { msg.destroy(); this.isShowingMessage = false; } });
         });
       }
     });
@@ -2260,9 +2346,13 @@ class PhaseScene extends Phaser.Scene {
 
   onBossDefeated() {
     if (this.config.showExitArrow === false) {
-      this.goToNextPhase();
+      // Em vez de sair na mesma hora, aguarda 3 segundos (3000 ms)
+      this.time.delayedCall(1500, () => {
+        this.goToNextPhase();
+      });
       return;
     }
+    // Para as fases 2 e 3, a porta/seta aparece normalmente
     this.doorOpen = true;
     this.door.setVisible(true);
     this.doorGlow.setVisible(true);
@@ -2271,13 +2361,14 @@ class PhaseScene extends Phaser.Scene {
   goToNextPhase() {
     const next = this.phaseIndex + 1;
     if (next >= PHASES.length) {
-      endGame(true); // Terminou tudo, vai pra tela do QR Code / Ranking
+      endGame(true); // Terminou tudo
     } else {
-      GameData.phaseIndex = next; // Libera a próxima ilha globalmente
+      // NOVO: Guarda de qual fase viemos para o barco saber de onde sair no Mapa
+      GameData.lastPhaseIndex = this.phaseIndex; 
+      GameData.phaseIndex = next; 
       updateHUD();
       this.cameras.main.fadeOut(300, 0, 0, 0);
       this.cameras.main.once("camerafadeoutcomplete", () => {
-        // Volta para o Mapa em vez de carregar a próxima fase direto
         this.scene.start("MapScene");
       });
     }
