@@ -1606,15 +1606,12 @@ function startNarrative(scene, narrative, onComplete) {
     return;
   }
 
-  // Bloqueia o movimento e as ações do jogador durante a historinha
   scene.player.setVelocityX(0);
   scene.inputManager.setEnabled(false);
 
   let currentIndex = 0;
 
-  // Função interna que puxa a fala atual e agenda a próxima
   function proximaFala() {
-    // Verificação de fim: se passou da última fala, libera o jogo
     if (currentIndex >= narrative.length) {
       scene.inputManager.setEnabled(true);
       if (onComplete) onComplete();
@@ -1624,47 +1621,35 @@ function startNarrative(scene, narrative, onComplete) {
     const dialogue = narrative[currentIndex];
     currentIndex++;
 
-    // 1. Descobre quem está falando
     const isPlayer = dialogue.type === "player";
     const nomeFalante = isPlayer ? GameData.playerName : "Narrador";
 
-    // 2. Formata o texto final (adicionando o nome de quem fala no topo e processando variáveis)
     let textoBruto = String(dialogue.text ?? "").replaceAll("{playerName}", GameData.playerName);
     const textoFinal = `${nomeFalante}:\n"${textoBruto}"`;
 
-    // 3. Define as imagens (se no futuro você colocar a imagem do jogador, é só trocar no if)
-    let idleImg = "narrador_idle";
-    let talkImg = "narrador_talk";
-    
-    /* Exemplo para o futuro, se quiser colocar a foto do bonequinho do jogador falando:
-    if (isPlayer) {
-      idleImg = "player_rosto_fechado";
-      talkImg = "player_rosto_falando";
-    }
-    */
+    // Empacota as imagens correspondentes. Se futuramente o Player não tiver a imagem "blink", o código ignora sem quebrar.
+    const avatares = isPlayer 
+      ? { idle: "char_idle", talk: "char_talk", blink: null } 
+      : { idle: "narrador_idle", talk: "narrador_talk", blink: "narrador_blink" };
 
-    // 4. Chama a ferramenta de popup animada!
     chamarNarrador(
       scene,
-      idleImg,
-      talkImg,
-      null, // Sem áudio específico pré-carregado nas transições no momento
+      avatares,
+      null,
       textoFinal,
       () => {
-        // A MÁGICA: O callback 'onComplete' da caixa de texto chama a próxima fala da lista
         proximaFala();
       }
     );
   }
 
-  // Dá o pontapé inicial chamando a primeira fala do array
   proximaFala();
 }
 
 // ---------------------------------------------------------
-// SISTEMA DO NARRADOR ANIMADO (Global)
+// SISTEMA DO NARRADOR ANIMADO (Com Redimensionamento Automático)
 // ---------------------------------------------------------
-function chamarNarrador(cena, imgIdleKey, imgTalkKey, audioKey, texto, onComplete) {
+function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
   const overlay = cena.add.rectangle(480, 270, 960, 540, 0x000000, 0.8)
     .setOrigin(0.5).setDepth(100).setScrollFactor(0).setInteractive();
 
@@ -1674,10 +1659,19 @@ function chamarNarrador(cena, imgIdleKey, imgTalkKey, audioKey, texto, onComplet
   box.fillRoundedRect(180, 100, 600, 340, 16);
   box.strokeRoundedRect(180, 100, 600, 340, 16);
 
-  const avatarIdle = cena.add.image(480, 170, imgIdleKey).setDepth(102).setScrollFactor(0);
-  const avatarTalk = cena.add.image(480, 170, imgTalkKey).setDepth(102).setScrollFactor(0).setVisible(false);
+  // 1. Aumentei o Y de 160 para 175 para o avatar maior não vazar o topo da caixa
+  const avatar = cena.add.image(480, 200, avatarKeys.idle).setDepth(102).setScrollFactor(0);
 
-  const messageText = cena.add.text(480, 250, "", {
+  // --- TAMANHO DO AVATAR ---
+  const targetHeight = 180; // Pode testar valores entre 120 e 140 aqui!
+  const sourceImage = cena.textures.get(avatarKeys.idle).getSourceImage();
+  if (sourceImage && sourceImage.height > 0) {
+    const scale = targetHeight / sourceImage.height;
+    avatar.setScale(scale);
+  }
+
+  // 2. Desci o texto de 230 para 260 para dar espaço ao avatar maior
+  const messageText = cena.add.text(480, 300, "", {
     fontSize: '20px',
     fontFamily: 'Arial',
     color: '#F4F7F9',
@@ -1687,7 +1681,7 @@ function chamarNarrador(cena, imgIdleKey, imgTalkKey, audioKey, texto, onComplet
 
   const hintText = cena.add.text(480, 410, "Clique para continuar ➡", {
     fontSize: '16px', fontStyle: 'italic', color: '#FFB347'
-  }).setOrigin(0.5).setDepth(102).setScrollFactor(0).setAlpha(0);
+  }).setOrigin(0.5, 0).setDepth(102).setScrollFactor(0).setAlpha(0);
 
   let voice;
   if (audioKey && cena.cache.audio.exists(audioKey)) {
@@ -1695,13 +1689,30 @@ function chamarNarrador(cena, imgIdleKey, imgTalkKey, audioKey, texto, onComplet
     voice.play();
   }
 
+  // --- LÓGICA DE ANIMAÇÃO (FALA E PISCAR) ---
   let isTalking = true;
+  let tempoAtePiscar = Phaser.Math.Between(25, 45); 
+
   const talkInterval = setInterval(() => {
-    if (isTalking) {
-      avatarIdle.setVisible(!avatarIdle.visible);
-      avatarTalk.setVisible(!avatarIdle.visible);
+    tempoAtePiscar--;
+
+    if (tempoAtePiscar <= 0 && avatarKeys.blink) {
+      avatar.setTexture(avatarKeys.blink);
+      tempoAtePiscar = Phaser.Math.Between(30, 60); 
+      return;
     }
-  }, 150);
+
+    if (isTalking) {
+      const atual = avatar.texture.key;
+      if (atual === avatarKeys.talkOpen) {
+        avatar.setTexture(avatarKeys.talkMid);
+      } else {
+        avatar.setTexture(avatarKeys.talkOpen);
+      }
+    } else {
+      avatar.setTexture(avatarKeys.idle); 
+    }
+  }, 130);
 
   let charIndex = 0;
   let isTyping = true;
@@ -1712,11 +1723,9 @@ function chamarNarrador(cena, imgIdleKey, imgTalkKey, audioKey, texto, onComplet
     
     if (charIndex >= texto.length) {
       clearInterval(typeInterval);
-      clearInterval(talkInterval);
-      avatarIdle.setVisible(true);
-      avatarTalk.setVisible(false);
       isTyping = false;
-      isTalking = false;
+      isTalking = false; 
+      avatar.setTexture(avatarKeys.idle); 
       hintText.setAlpha(1);
     }
   }, 40);
@@ -1724,19 +1733,17 @@ function chamarNarrador(cena, imgIdleKey, imgTalkKey, audioKey, texto, onComplet
   overlay.on('pointerdown', () => {
     if (isTyping) {
       clearInterval(typeInterval);
-      clearInterval(talkInterval);
-      avatarIdle.setVisible(true);
-      avatarTalk.setVisible(false);
       messageText.setText(texto);
       isTyping = false;
       isTalking = false;
+      avatar.setTexture(avatarKeys.idle);
       hintText.setAlpha(1);
     } else {
+      clearInterval(talkInterval); 
       if (voice && voice.isPlaying) voice.stop(); 
       overlay.destroy();
       box.destroy();
-      avatarIdle.destroy();
-      avatarTalk.destroy();
+      avatar.destroy();
       messageText.destroy();
       hintText.destroy();
 
@@ -1765,9 +1772,12 @@ class MapScene extends Phaser.Scene {
     if (!this.textures.exists("icon_boat")) {
       this.load.image("icon_boat", "assets/icons/barco.png"); 
     }
+    // Carregamento unificado das 4 variações do narrador
     if (!this.textures.exists("narrador_idle")) {
-      this.load.image("narrador_idle", "assets/characters/narrador_fechado.png");
-      this.load.image("narrador_talk", "assets/characters/narrador_falando.png");
+      this.load.image("narrador_idle", "assets/characters/narrador_neutro.png");
+      this.load.image("narrador_talk_open", "assets/characters/narrador_falando.png");
+      this.load.image("narrador_talk_mid", "assets/characters/narrador_falando2.png");
+      this.load.image("narrador_blink", "assets/characters/narrador_piscando.png");
     }
     if (!this.cache.audio.exists("voz_mapa")) {
       this.load.audio("voz_mapa", "assets/audio/voz_mapa.mp3"); 
@@ -1820,13 +1830,11 @@ class MapScene extends Phaser.Scene {
         this.add.image(island.iconX, island.iconY, "icon_check").setOrigin(0.5).setDepth(5).setScale(0.5);
       
       } else if (status === "locked") {
-        // ADICIONAMOS 'island.lockedImg =' PARA PODER CONTROLAR O CADEADO DEPOIS
         island.lockedImg = this.add.image(island.iconX, island.iconY, "icon_locked").setOrigin(0.5).setDepth(5).setScale(0.1);
       
       } else if (status === "unlocking") {
-        targetIslandObj = island; // Salva para a animação
+        targetIslandObj = island; 
         
-        // Desenha o cadeado (que vai quebrar) e a seta (invisível por enquanto)
         island.padlockImg = this.add.image(island.iconX, island.iconY, "icon_locked").setOrigin(0.5).setDepth(5).setScale(0.1);
         
         island.arrowText = this.add.text(island.arrowX, island.arrowY, "⬇", {
@@ -1845,7 +1853,6 @@ class MapScene extends Phaser.Scene {
       }
 
       zone.on('pointerdown', () => {
-        // Trava cliques enquanto a animação do barco estiver rodando
         if (isUnlocking && GameData.lastPhaseIndex < GameData.phaseIndex) return;
 
         if (status === "current" || status === "unlocking") {
@@ -1855,23 +1862,21 @@ class MapScene extends Phaser.Scene {
             this.scene.start("PhaseScene", { phaseIndex: island.id });
           });
         } else if (status === "completed") {
-          playSfx(SFX.type); // Som suave para fase já concluída
+          playSfx(SFX.type); 
           this.showFeedbackMessage(island.x, island.y - 40, "✅ Fase já concluída!", '#2E7D32');
         } else {
-          playSfx(SFX.locked); // Toca o som de corrente
+          playSfx(SFX.locked); 
           this.showFeedbackMessage(island.x, island.y - 40, "🔒 Ilha Bloqueada! Complete a anterior.", '#D32F2F');
 
-          // --- ANIMAÇÃO DO CADEADO BALANÇANDO ---
-          // Verifica se a imagem existe e se ELA JÁ NÃO ESTÁ balançando (evita bugar se clicar muito rápido)
           if (island.lockedImg && !this.tweens.isTweening(island.lockedImg)) {
             this.tweens.add({
               targets: island.lockedImg,
-              angle: { from: -15, to: 15 }, // Balança de -15 a 15 graus
-              duration: 50,                 // Bem rápido pra parecer uma batida seca
+              angle: { from: -15, to: 15 },
+              duration: 50,
               yoyo: true,
-              repeat: 4,                    // Vai e volta 4 vezes
+              repeat: 4,
               onComplete: () => {
-                island.lockedImg.setAngle(0); // Garante que volta a ficar perfeitamente reto no final
+                island.lockedImg.setAngle(0);
               }
             });
           }
@@ -1882,16 +1887,22 @@ class MapScene extends Phaser.Scene {
     // --- FUNÇÃO QUE DISPARA O NARRADOR ---
     const dispararNarrador = () => {
       let textoNarrador = "";
-      if (GameData.phaseIndex === 0) {
-        textoNarrador = `Olá, ${GameData.playerName}! Seja bem-vindo à sua jornada. Clique na primeira ilha desbloqueada para iniciar!`;
-      } else if (GameData.phaseIndex === 1) {
-        textoNarrador = "Muito bem! Você concluiu a primeira etapa. A Trilha Digital já está disponível para o próximo desafio.";
-      } else if (GameData.phaseIndex === 2) {
-        textoNarrador = "Excelente progresso! A última etapa, Finanças na Mão, está liberada. Vamos lá!";
-      }
+      if (GameData.phaseIndex === 0) textoNarrador = `Olá, ${GameData.playerName}! Seja bem-vindo à sua jornada. Clique na primeira ilha desbloqueada para iniciar!`;
+      else if (GameData.phaseIndex === 1) textoNarrador = "Muito bem! Você concluiu a primeira etapa. A Trilha Digital já está disponível para o próximo desafio.";
+      else if (GameData.phaseIndex === 2) textoNarrador = "Excelente progresso! A última etapa, Acelerador Digital, está liberada. Vamos lá!";
 
       if (textoNarrador !== "") {
-        chamarNarrador(this, "narrador_idle", "narrador_talk", null, textoNarrador);
+        chamarNarrador(
+          this, 
+          { 
+            idle: "narrador_idle", 
+            talkOpen: "narrador_talk_open", 
+            talkMid: "narrador_talk_mid", 
+            blink: "narrador_blink" 
+          }, 
+          null, 
+          textoNarrador
+        );
       }
     };
 
@@ -1899,10 +1910,9 @@ class MapScene extends Phaser.Scene {
     if (isUnlocking && targetIslandObj) {
       const startIsland = islands[GameData.lastPhaseIndex];
       
-      // 1. Cria o barco na ilha anterior
-      const barco = this.add.image(startIsland.x, startIsland.y, "icon_boat").setDepth(15).setScale(0.1);
+      // Corrigido a escala do barco de 0.1 para 0.5 para ele não sumir
+      const barco = this.add.image(startIsland.x, startIsland.y, "icon_boat").setDepth(15).setScale(0.5);
 
-      // 2. Viagem do barco até a nova ilha
       this.tweens.add({
         targets: barco,
         x: targetIslandObj.x,
@@ -1910,29 +1920,26 @@ class MapScene extends Phaser.Scene {
         duration: 2500,
         ease: 'Sine.easeInOut',
         onComplete: () => {
-          barco.destroy(); // Barco some ao chegar
+          barco.destroy(); 
           
-          // 3. Animação do Cadeado (Treme e explode)
           if (targetIslandObj.padlockImg) {
             playSfx(SFX.unlock);
             this.tweens.add({
               targets: targetIslandObj.padlockImg,
-              angle: { from: -20, to: 20 }, // Faz tremer pros lados
+              angle: { from: -20, to: 20 },
               duration: 50,
               yoyo: true,
               repeat: 5,
               onComplete: () => {
-                // Cresce um pouco e desaparece (fade out)
                 this.tweens.add({
                   targets: targetIslandObj.padlockImg,
-                  scale: 0.2, // cresce sutilmente
+                  scale: 0.2,
                   alpha: 0,
                   duration: 300,
                   onComplete: () => {
                     targetIslandObj.padlockImg.destroy();
-                    // 4. Mostra a Seta e libera o narrador
                     targetIslandObj.arrowText.setVisible(true);
-                    GameData.lastPhaseIndex = GameData.phaseIndex; // Atualiza a trava
+                    GameData.lastPhaseIndex = GameData.phaseIndex;
                     dispararNarrador();
                   }
                 });
@@ -1942,7 +1949,6 @@ class MapScene extends Phaser.Scene {
         }
       });
     } else {
-      // Se não houver animação nova (ex: acabou de iniciar o jogo), puxa o narrador direto
       dispararNarrador();
     }
   }
@@ -1974,8 +1980,6 @@ class MapScene extends Phaser.Scene {
   showFeedbackMessage(x, y, text, color) {
     if (this.isShowingMessage) return;
     this.isShowingMessage = true;
-
-    // O áudio foi removido daqui, pois agora é gerenciado pelo clique
 
     const safeX = Phaser.Math.Clamp(x, 220, 740);
 
