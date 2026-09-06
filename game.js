@@ -123,7 +123,7 @@ function resetGameData() {
 const PHASES = [
   {
     id: "fase1",
-    name: "Abrindo sua Empresa",
+    name: "Boas Vindas",
     startX: 80,
     startDirection: "right",
     hasBoss: true,
@@ -134,35 +134,35 @@ const PHASES = [
     groundColor: 0x2c3350,
     decorColor: 0x22304f,
     levelWidth: 1990,
-    bg: "street_bg.png",
+    bg: "street_bg_3.jpg",
     bossX: 1750,
-    bossY: 478,
+    bossY: 500,
     doorX: 1770,
-    groundY: 480,
+    groundY: 500,
     showExitArrow: false,
     exitDirection: "forward", // seta aponta pra frente
-    characterScale: 1.8,
+    characterScale: 2.0,
     infoSpots: [
       {
-        x: 440,
-        y: 340,
+        x: 350,
+        y: 325,
         text: "Se você está começando um negócio, lembre-se: organizar tudo desde o início evita muita dor de cabeça no futuro.",
       },
       {
-        x: 820,
-        y: 320,
+        x: 845,
+        y: 330,
         text: "Muita gente acha que abrir uma empresa é só conseguir um CNPJ, mas existem outras responsabilidades importantes.",
       },
       {
-        x: 1300,
-        y: 320,
+        x: 1250,
+        y: 330,
         text: "Cada decisão tomada no início da empresa pode fazer diferença lá na frente. Vale a pena conhecer bem cada etapa.",
       },
     ],
     boss: {
       name: "Analista do Sebrae",
       portrait: { idle: "boss1_idle.png", talk: "boss1_talk.png" },
-      portraitHeight: 130, // corpo inteiro — maior que os outros dois (retrato busto)
+      portraitHeight: 150, // corpo inteiro — maior que os outros dois (retrato busto)
       portraitFlip: true,
       greeting:
         "Olá! Me chamo Franciel Monte, sou o Analista do Sebrae. Antes de você seguir sua jornada, vou ver o que você já aprendeu sobre abrir uma empresa!",
@@ -327,7 +327,6 @@ const PHASES = [
     startDirection: "right",
     hasBoss: true,
     exitInitiallyOpen: false,
-    objectiveHint: "⬅ Depois de falar com o gerente, volte e saia do Sebrae.",
     showExitArrow: true,
     exitDirection: "backward", // seta aponta pra trás (saindo da empresa)
     phaseNumber: 2,
@@ -521,118 +520,6 @@ const PHASES = [
         },
       ],
     },
-  },
-  {
-    id: "fasetransicao",
-    name: "O Início de uma Nova Jornada",
-    phaseNumber: 2,
-    phaseLabel: "Interlúdio",
-    objectiveHint: "⬅ Siga à esquerda até a próxima rua.",
-    skyColor: 0x18233d,
-    groundColor: 0x2c3350,
-    decorColor: 0x22304f,
-    levelWidth: 1990,
-    bg: "street_bg.png",
-    startX: 1790,
-    startDirection: "left",
-    hasBoss: false,
-    exitInitiallyOpen: true,
-    doorX: 90,
-    groundY: 480,
-    showExitArrow: true,
-    exitDirection: "backward", // seta aponta pra trás (saindo da empresa)
-    characterScale: 1.8,
-
-    narrative: [
-      {
-        type: "narrator",
-        text: "Após concluir o processo de formalização, a empresa finalmente estava pronta para começar.",
-        duration: 3500,
-      },
-      {
-        type: "player",
-        text: "Pronto! Meu CNPJ está aberto. Agora é hora de colocar a empresa em funcionamento!",
-        duration: 3500,
-      },
-    ],
-    infoSpots: [
-      {
-        x: 1300,
-        y: 320,
-        text: "Parabéns por formalizar sua empresa! Esse é só o começo, agora é hora de cuidar bem dela. Boa sorte nessa nova jornada!",
-      },
-      {
-        x: 820,
-        y: 320,
-        text: "Uma boa gestão financeira, organização e planejamento fazem toda a diferença para o sucesso do seu negócio.",
-      },
-      {
-        x: 440,
-        y: 340,
-        text: "Lembre-se: buscar orientação de profissionais especializados pode ajudar sua empresa a crescer com mais segurança.",
-      },
-    ],
-  },
-  {
-    id: "fasetransicao2",
-    name: "Novos Desafios",
-    phaseNumber: 2,
-    phaseLabel: "Algum tempo depois",
-    skyColor: 0x18233d,
-    objectiveHint: "⬅ Continue à esquerda até chegar na JS Grilo.",
-    groundColor: 0x2c3350,
-    decorColor: 0x22304f,
-    levelWidth: 1990,
-    bg: "street2_bg.png",
-    startX: 1880,
-    startDirection: "left",
-    hasBoss: false,
-    exitInitiallyOpen: true,
-    doorX: 230,
-    groundY: 460,
-    showExitArrow: true,
-    exitDirection: "backward",
-    characterScale: 1.8,
-
-    narrative: [
-      {
-        type: "narrator",
-        text: "Algum tempo depois...",
-        duration: 3500,
-      },
-      {
-        type: "narrator",
-        text: "A empresa começou a crescer. Novos clientes chegaram e as responsabilidades aumentaram.",
-        duration: 3500,
-      },
-      {
-        type: "player",
-        text: "Minha empresa está crescendo, mas preciso de ajuda para organizar tudo.",
-        duration: 3500,
-      },
-      {
-        type: "player",
-        text: "Ouvi falar muito bem da JS Grilo Contabilidade & Gestão. Vou procurar a equipe deles.",
-        duration: 3500,
-      },
-    ],
-    infoSpots: [
-      {
-        x: 1430,
-        y: 325,
-        text: "Com a empresa crescendo, a papelada e as obrigações também aumentam, é hora de ter um bom apoio contábil.",
-      },
-      {
-        x: 1130,
-        y: 305,
-        text: "Uma contabilidade de confiança faz toda diferença: ajuda a entender os números e tomar decisões melhores.",
-      },
-      {
-        x: 720,
-        y: 280,
-        text: "Sou cliente da JS Grilo Contabilidade & Gestão há um tempo, recomendo demais, são muito bons no que fazem!",
-      },
-    ],
   },
   {
     id: "fase3",
@@ -1320,10 +1207,13 @@ function startBossBattle(scene, phaseConfig, bossSprite, onComplete) {
         clearInterval(timerInterval);
         return;
       }
+      
+      // ADICIONE ESTA LINHA: Se estiver pausado, pula a contagem deste segundo
+      if (GameData.paused) return; 
+
       timeLeft -= 1;
       headerEl.textContent = `⏱ ${timeLeft}s`;
-      // Dispara o áudio de contagem UMA única vez, exatamente quando faltam 5s.
-      // O arquivo tem 5s de duração e toca sem loop, terminando junto com o tempo.
+      
       if (timeLeft === 5 && !tickPlayedThisQuestion) {
         tickPlayedThisQuestion = true;
         playSfx(SFX.tick);
@@ -1588,66 +1478,7 @@ function showPhaseIntro(phaseConfig, onComplete) {
 }
 
 // ---------------------------------------------------------
-// NARRATIVA DAS FASES DE TRANSIÇÃO
-//
-// - Bloqueia o movimento durante as falas.
-// - Digita o texto letra por letra.
-// - Um clique completa a digitação.
-// - Outro clique avança para a próxima fala.
-// - Também avança automaticamente após o duration.
-// ---------------------------------------------------------
-// ---------------------------------------------------------
-// NARRATIVA DAS FASES DE TRANSIÇÃO (Unificada com o novo Narrador)
-// ---------------------------------------------------------
-function startNarrative(scene, narrative, onComplete) {
-  if (!Array.isArray(narrative) || narrative.length === 0) {
-    scene.inputManager.setEnabled(true);
-    if (onComplete) onComplete();
-    return;
-  }
-
-  scene.player.setVelocityX(0);
-  scene.inputManager.setEnabled(false);
-
-  let currentIndex = 0;
-
-  function proximaFala() {
-    if (currentIndex >= narrative.length) {
-      scene.inputManager.setEnabled(true);
-      if (onComplete) onComplete();
-      return;
-    }
-
-    const dialogue = narrative[currentIndex];
-    currentIndex++;
-
-    const isPlayer = dialogue.type === "player";
-    const nomeFalante = isPlayer ? GameData.playerName : "Narrador";
-
-    let textoBruto = String(dialogue.text ?? "").replaceAll("{playerName}", GameData.playerName);
-    const textoFinal = `${nomeFalante}:\n"${textoBruto}"`;
-
-    // Empacota as imagens correspondentes. Se futuramente o Player não tiver a imagem "blink", o código ignora sem quebrar.
-    const avatares = isPlayer 
-      ? { idle: "char_idle", talk: "char_talk", blink: null } 
-      : { idle: "narrador_idle", talk: "narrador_talk", blink: "narrador_blink" };
-
-    chamarNarrador(
-      scene,
-      avatares,
-      null,
-      textoFinal,
-      () => {
-        proximaFala();
-      }
-    );
-  }
-
-  proximaFala();
-}
-
-// ---------------------------------------------------------
-// SISTEMA DO NARRADOR ANIMADO (Com Redimensionamento Automático)
+// SISTEMA DO NARRADOR ANIMADO (Ciclo Fluido de 4 Frames Ajustado)
 // ---------------------------------------------------------
 function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
   const overlay = cena.add.rectangle(480, 270, 960, 540, 0x000000, 0.8)
@@ -1656,30 +1487,32 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
   const box = cena.add.graphics().setDepth(101).setScrollFactor(0);
   box.fillStyle(0x002B54, 1);
   box.lineStyle(4, 0xFF8F00, 1);
-  box.fillRoundedRect(180, 100, 600, 340, 16);
-  box.strokeRoundedRect(180, 100, 600, 340, 16);
+  
+  // AJSUTES AQUI: Y subiu de 120 para 80 | Altura aumentou de 280 para 340
+  box.fillRoundedRect(230, 80, 500, 340, 16);
+  box.strokeRoundedRect(230, 80, 500, 340, 16);
 
-  // 1. Aumentei o Y de 160 para 175 para o avatar maior não vazar o topo da caixa
-  const avatar = cena.add.image(480, 200, avatarKeys.idle).setDepth(102).setScrollFactor(0);
+  // Avatar puxado levemente para baixo (Y de 175 para 200) para encaixar perfeitamente
+  const avatar = cena.add.image(480, 190, avatarKeys.idle).setDepth(102).setScrollFactor(0);
 
-  // --- TAMANHO DO AVATAR ---
-  const targetHeight = 180; // Pode testar valores entre 120 e 140 aqui!
+  const targetHeight = 165; 
   const sourceImage = cena.textures.get(avatarKeys.idle).getSourceImage();
   if (sourceImage && sourceImage.height > 0) {
     const scale = targetHeight / sourceImage.height;
     avatar.setScale(scale);
   }
 
-  // 2. Desci o texto de 230 para 260 para dar espaço ao avatar maior
-  const messageText = cena.add.text(480, 300, "", {
+  // Texto da mensagem ajustado de 280 para 295 (desce um pouco, criando o espaço)
+  const messageText = cena.add.text(480, 295, "", {
     fontSize: '20px',
     fontFamily: 'Arial',
     color: '#F4F7F9',
     align: 'center',
-    wordWrap: { width: 540 }
+    wordWrap: { width: 420 }
   }).setOrigin(0.5, 0).setDepth(102).setScrollFactor(0);
 
-  const hintText = cena.add.text(480, 410, "Clique para continuar ➡", {
+  // Texto "Clique para continuar" reposicionado para o rodapé da nova caixa
+  const hintText = cena.add.text(480, 385, "Clique para continuar ➡", {
     fontSize: '16px', fontStyle: 'italic', color: '#FFB347'
   }).setOrigin(0.5, 0).setDepth(102).setScrollFactor(0).setAlpha(0);
 
@@ -1689,42 +1522,80 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
     voice.play();
   }
 
-  // --- LÓGICA DE ANIMAÇÃO (FALA E PISCAR) ---
-  let isTalking = true;
-  let tempoAtePiscar = Phaser.Math.Between(25, 45); 
+  // Verifica se é o Narrador (animação fluida) ou o Jogador (animação simples)
+  const isMultiFrame = avatarKeys.idle === "narrador_idle";
 
-  const talkInterval = setInterval(() => {
+  // --- SEQUÊNCIAS DE IDAS E VINDAS ---
+  // A boca agora começa fechada (narrador_idle), abre até o limite e volta a fechar
+  const talkSequence = isMultiFrame ? [
+    "narrador_idle",   // <-- Incluído no fluxo de talk (boca fechada)
+    "narrador_talk_1", 
+    "narrador_talk_2", 
+    "narrador_talk_3", 
+    "narrador_talk_4", 
+    "narrador_talk_3", 
+    "narrador_talk_2", 
+    "narrador_talk_1"
+  ] : [avatarKeys.idle, avatarKeys.talk || avatarKeys.idle];
+
+  const blinkSequence = isMultiFrame ? [
+    "narrador_blink_1", 
+    "narrador_blink_2", 
+    "narrador_blink_3", 
+    "narrador_blink_4", 
+    "narrador_blink_3", 
+    "narrador_blink_2", 
+    "narrador_blink_1"
+  ] : null;
+
+  let isTalking = true;
+  let talkIndex = 0;
+  let isBlinking = false;
+  let blinkIndex = 0;
+  let tempoAtePiscar = Phaser.Math.Between(35, 70); 
+  
+  // Tratamento de segurança para o texto não quebrar o loop
+  const textoSeguro = texto || ""; 
+
+  const animInterval = setInterval(() => {
     tempoAtePiscar--;
 
-    if (tempoAtePiscar <= 0 && avatarKeys.blink) {
-      avatar.setTexture(avatarKeys.blink);
-      tempoAtePiscar = Phaser.Math.Between(30, 60); 
+    if (isBlinking && blinkSequence) {
+      avatar.setTexture(blinkSequence[blinkIndex]);
+      blinkIndex++;
+      if (blinkIndex >= blinkSequence.length) {
+        isBlinking = false;
+        blinkIndex = 0;
+      }
+      return;
+    }
+
+    if (tempoAtePiscar <= 0 && blinkSequence) {
+      isBlinking = true;
+      blinkIndex = 0;
+      tempoAtePiscar = Phaser.Math.Between(45, 90);
       return;
     }
 
     if (isTalking) {
-      const atual = avatar.texture.key;
-      if (atual === avatarKeys.talkOpen) {
-        avatar.setTexture(avatarKeys.talkMid);
-      } else {
-        avatar.setTexture(avatarKeys.talkOpen);
-      }
+      avatar.setTexture(talkSequence[talkIndex]);
+      talkIndex = (talkIndex + 1) % talkSequence.length;
     } else {
       avatar.setTexture(avatarKeys.idle); 
     }
-  }, 130);
+  }, 90);
 
   let charIndex = 0;
   let isTyping = true;
   const typeInterval = setInterval(() => {
     charIndex++;
-    messageText.setText(texto.slice(0, charIndex));
+    messageText.setText(textoSeguro.slice(0, charIndex));
     playSfx(SFX.type);
     
-    if (charIndex >= texto.length) {
+    if (charIndex >= textoSeguro.length) {
       clearInterval(typeInterval);
       isTyping = false;
-      isTalking = false; 
+      isTalking = false; // Isso para a animação da boca imediatamente
       avatar.setTexture(avatarKeys.idle); 
       hintText.setAlpha(1);
     }
@@ -1733,13 +1604,13 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
   overlay.on('pointerdown', () => {
     if (isTyping) {
       clearInterval(typeInterval);
-      messageText.setText(texto);
+      messageText.setText(textoSeguro);
       isTyping = false;
-      isTalking = false;
+      isTalking = false; // Trava a boca fechada ao pular o texto
       avatar.setTexture(avatarKeys.idle);
       hintText.setAlpha(1);
     } else {
-      clearInterval(talkInterval); 
+      clearInterval(animInterval); 
       if (voice && voice.isPlaying) voice.stop(); 
       overlay.destroy();
       box.destroy();
@@ -1755,12 +1626,16 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
 // ---------------------------------------------------------
 // CENA DO MAPA DAS ILHAS (Com Animação de Desbloqueio)
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+// CENA DO MAPA DAS ILHAS (Com Animação de Desbloqueio)
+// ---------------------------------------------------------
 class MapScene extends Phaser.Scene {
   constructor() {
     super("MapScene");
   }
 
   preload() {
+    // Assets exclusivos do Mapa (A MapScene NÃO usa this.config)
     if (!this.textures.exists("map_bg")) {
       this.load.image("map_bg", "assets/backgrounds/map_bg.png");
     }
@@ -1772,12 +1647,19 @@ class MapScene extends Phaser.Scene {
     if (!this.textures.exists("icon_boat")) {
       this.load.image("icon_boat", "assets/icons/barco.png"); 
     }
-    // Carregamento unificado das 4 variações do narrador
+    // Carregamento do Narrador no Mapa
     if (!this.textures.exists("narrador_idle")) {
-      this.load.image("narrador_idle", "assets/characters/narrador_neutro.png");
-      this.load.image("narrador_talk_open", "assets/characters/narrador_falando.png");
-      this.load.image("narrador_talk_mid", "assets/characters/narrador_falando2.png");
-      this.load.image("narrador_blink", "assets/characters/narrador_piscando.png");
+      this.load.image("narrador_idle", "assets/characters/narrador_blink_1.png");
+      
+      this.load.image("narrador_talk_1", "assets/characters/narrador_talk_1.png");
+      this.load.image("narrador_talk_2", "assets/characters/narrador_talk_2.png");
+      this.load.image("narrador_talk_3", "assets/characters/narrador_talk_3.png");
+      this.load.image("narrador_talk_4", "assets/characters/narrador_talk_4.png");
+
+      this.load.image("narrador_blink_1", "assets/characters/narrador_blink_1.png");
+      this.load.image("narrador_blink_2", "assets/characters/narrador_blink_2.png");
+      this.load.image("narrador_blink_3", "assets/characters/narrador_blink_3.png");
+      this.load.image("narrador_blink_4", "assets/characters/narrador_blink_4.png");
     }
     if (!this.cache.audio.exists("voz_mapa")) {
       this.load.audio("voz_mapa", "assets/audio/voz_mapa.mp3"); 
@@ -1785,8 +1667,10 @@ class MapScene extends Phaser.Scene {
   }
 
   create() {
+    document.getElementById("hud").style.display = "none";
+    document.getElementById("touch-controls").style.display = "none";
     const hud = document.getElementById("hud");
-    if (hud) hud.style.display = "none";
+    if (hud) hud.style.display = "none"; 
     const btnLeft = document.getElementById("btn-left");
     if (btnLeft) btnLeft.style.display = "none";
     const btnRight = document.getElementById("btn-right");
@@ -1798,7 +1682,7 @@ class MapScene extends Phaser.Scene {
     const islands = [
       { id: 0, name: "FINECAP", x: 175, y: 450, arrowX: 190, arrowY: 210, iconX: 170, iconY: 365 },
       { id: 1, name: "TRILHA DIGITAL", x: 510, y: 200, arrowX: 510, arrowY: 60, iconX: 510, iconY: 135 },
-      { id: 2, name: "ACELERADOR DIGITAL", x: 830, y: 450, arrowX: 840, arrowY: 240, iconX: 820, iconY: 400 }
+      { id: 2, name: "ACELERADOR DIGITAL", x: 830, y: 450, arrowX: 820, arrowY: 240, iconX: 820, iconY: 400 }
     ];
 
     const pathGraphics = this.add.graphics().setDepth(1);
@@ -1808,12 +1692,10 @@ class MapScene extends Phaser.Scene {
       this.drawDottedLine(pathGraphics, islands[i].x, islands[i].y, islands[i + 1].x, islands[i + 1].y);
     }
 
-    // Prevenção caso o jogo comece direto no mapa
     if (GameData.lastPhaseIndex === undefined) GameData.lastPhaseIndex = GameData.phaseIndex;
     
-    // Verifica se acabamos de passar de fase
     const isUnlocking = GameData.lastPhaseIndex < GameData.phaseIndex;
-    let targetIslandObj = null; // Guardará a referência da nova ilha
+    let targetIslandObj = null; 
 
     islands.forEach((island) => {
       let status = "locked";
@@ -1884,7 +1766,6 @@ class MapScene extends Phaser.Scene {
       });
     });
 
-    // --- FUNÇÃO QUE DISPARA O NARRADOR ---
     const dispararNarrador = () => {
       let textoNarrador = "";
       if (GameData.phaseIndex === 0) textoNarrador = `Olá, ${GameData.playerName}! Seja bem-vindo à sua jornada. Clique na primeira ilha desbloqueada para iniciar!`;
@@ -1906,12 +1787,11 @@ class MapScene extends Phaser.Scene {
       }
     };
 
-    // --- LÓGICA DO BARCO E DA ANIMAÇÃO DO CADEADO ---
     if (isUnlocking && targetIslandObj) {
       const startIsland = islands[GameData.lastPhaseIndex];
       
-      // Corrigido a escala do barco de 0.1 para 0.5 para ele não sumir
-      const barco = this.add.image(startIsland.x, startIsland.y, "icon_boat").setDepth(15).setScale(0.5);
+      // Barco com tamanho corrigido (setScale 0.15)
+      const barco = this.add.image(startIsland.x, startIsland.y, "icon_boat").setDepth(15).setScale(0.10);
 
       this.tweens.add({
         targets: barco,
@@ -1953,7 +1833,6 @@ class MapScene extends Phaser.Scene {
     }
   }
 
-  // --- FUNÇÕES AUXILIARES ---
   criarPlacaArredondada(x, y, texto, corFundo, corTexto) {
     const label = this.add.text(x, y, texto, { fontSize: "18px", fontStyle: "bold", color: corTexto }).setOrigin(0.5).setDepth(6);
     const bg = this.add.graphics().setDepth(5);
@@ -2049,6 +1928,8 @@ class PhaseScene extends Phaser.Scene {
   }
 
   create() {
+    document.getElementById("hud").style.display = "flex";
+    document.getElementById("touch-controls").style.display = "flex"
     // Mostra o HUD e os botões de movimento ao entrar na fase
     const hud = document.getElementById("hud");
     if (hud) hud.style.display = "flex"; // ou "block", dependendo do seu CSS
@@ -2338,9 +2219,43 @@ class PhaseScene extends Phaser.Scene {
     // Bloqueia o personagem durante o título
     this.inputManager.setEnabled(false);
 
-    // Apresentação do capítulo
+    // Apresentação do capítulo e chamada automática do Narrador para as fases 1, 2 e 3
     showPhaseIntro(cfg, () => {
-      if (cfg.narrative?.length) {
+      // Mensagens personalizadas do Narrador para o início de cada fase
+      let textoNarrador = null;
+
+      if (cfg.id === "fase1") {
+        textoNarrador = "Olá, empreendedor! Seja bem-vindo à primeira etapa. Vamos aprender o básico sobre a abertura e formalização da sua empresa.";
+      } else if (cfg.id === "fase2") {
+        textoNarrador = "Excelente! Agora que sua empresa está formalizada, vamos entender um pouco mais sobre a organização financeira e as obrigações.";
+      } else if (cfg.id === "fase3") {
+        textoNarrador = "Chegamos ao desafio final! Aqui na JS Grilo vamos tratar de assuntos mais avançados e estratégicos da contabilidade.";
+      }
+
+      if (textoNarrador) {
+        // Pausa completamente o jogo para o narrador dar o recado
+        GameData.paused = true;
+        this.physics.pause();
+        this.inputManager.setEnabled(false);
+
+        chamarNarrador(
+          this,
+          { 
+            idle: "narrador_idle", 
+            talkOpen: "narrador_talk_open", 
+            talkMid: "narrador_talk_mid", 
+            blink: "narrador_blink" 
+          },
+          null, // Áudio opcional
+          textoNarrador,
+          () => {
+            // Retoma a física e o controle ao fechar o balão
+            GameData.paused = false;
+            this.physics.resume();
+            this.inputManager.setEnabled(true);
+          }
+        );
+      } else if (cfg.narrative?.length) {
         startNarrative(this, cfg.narrative);
       } else {
         this.inputManager.setEnabled(true);
@@ -2536,29 +2451,72 @@ document.getElementById("confirm-name-btn").addEventListener("click", () => {
   GameData.playerName = name;
   resetGameData();
   updateHUD();
+  
+  // Exibe os controles de toque ao sair do menu inicial
+  document.getElementById("touch-controls").style.display = "flex";
+  
   document.getElementById("start-overlay").classList.add("hidden");
   game.scene.start("MapScene");
 });
 
-// Esconde o aviso assim que a pessoa começar a digitar de novo
-nameInput.addEventListener("input", () => {
-  nameWarning.classList.add("hidden");
+// Função para ajustar o volume globalmente
+function setGlobalVolume(val) {
+  const v = Math.max(0, Math.min(1, val));
+
+  // Altera apenas o volume da música de fundo (multiplicado pelo volume base dela que é 0.2)
+  SFX.bgm.volume = v * 0.2; 
+
+  // Os efeitos sonoros (SFX.type, SFX.tick, etc.) mantêm seus valores originais fixos e intocados.
+
+  const label = document.getElementById("volume-label");
+  if (label) label.textContent = `${Math.round(v * 100)}%`;
+}
+
+// Eventos da Barra de Volume
+const volumeBtn = document.getElementById("volume-btn");
+const volumePopup = document.getElementById("volume-popup");
+const volumeSlider = document.getElementById("volume-slider");
+
+volumeBtn.addEventListener("click", (e) => {
+  e.stopPropagation();
+  volumePopup.classList.toggle("hidden");
 });
 
-// ---------------------------------------------------------
-// TELA FINAL — ranking e reinício
-// ---------------------------------------------------------
-document.getElementById("view-ranking-btn").addEventListener("click", () => {
-  renderRankingInto("ranking-list-content");
-  document.getElementById("ranking-overlay").classList.remove("hidden");
+volumeSlider.addEventListener("input", (e) => {
+  setGlobalVolume(parseFloat(e.target.value));
 });
-document.getElementById("close-ranking-btn").addEventListener("click", () => {
-  document.getElementById("ranking-overlay").classList.add("hidden");
+
+// Fecha o pop-up se clicar fora
+document.addEventListener("click", (e) => {
+  if (!volumePopup.contains(e.target) && e.target !== volumeBtn) {
+    volumePopup.classList.add("hidden");
+  }
 });
-document.getElementById("restart-btn").addEventListener("click", () => {
-  document.getElementById("end-overlay").classList.add("hidden");
-  nameInput.value = "";
-  nameWarning.classList.add("hidden");
-  showPanel("panel-menu");
-  document.getElementById("start-overlay").classList.remove("hidden");
+
+// Eventos do Botão e Modal de Pause
+const pauseBtn = document.getElementById("pause-btn");
+const pauseModal = document.getElementById("pause-modal");
+
+pauseBtn.addEventListener("click", () => {
+  GameData.paused = true;
+  pauseModal.classList.remove("hidden");
+
+  // O jeito nativo e correto de congelar o Phaser (para física, update, inputs e animações)
+  game.scene.scenes.forEach(scene => {
+    if (scene.scene.isActive()) {
+      scene.scene.pause();
+    }
+  });
+});
+
+document.getElementById("resume-btn").addEventListener("click", () => {
+  GameData.paused = false;
+  pauseModal.classList.add("hidden");
+
+  // Retoma o funcionamento do motor do Phaser
+  game.scene.scenes.forEach(scene => {
+    if (scene.scene.isPaused()) {
+      scene.scene.resume();
+    }
+  });
 });

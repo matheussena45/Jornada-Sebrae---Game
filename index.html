@@ -13,7 +13,37 @@
 
   <body>
     <div id="game-wrapper">
+      <div id="game-top-controls">
+        <div class="volume-container">
+          <button
+            id="volume-btn"
+            class="top-control-btn"
+            title="Ajustar Volume"
+          >
+            🔊 <span id="volume-label">20%</span>
+          </button>
+          <div id="volume-popup" class="hidden">
+            <input
+              type="range"
+              id="volume-slider"
+              min="0"
+              max="1"
+              step="0.05"
+              value="0.2"
+            />
+          </div>
+        </div>
+        <button id="pause-btn" class="top-control-btn" title="Pausar Jogo">
+          ⏸ Pausar
+        </button>
+      </div>
       <div id="game-container"></div>
+      <div id="pause-modal" class="hidden">
+  <div class="modal-content">
+    <h2>Jogo Pausado</h2>
+    <button id="resume-btn" class="menu-btn">Continuar</button>
+  </div>
+</div>
 
       <div id="touch-controls">
         <button
@@ -67,17 +97,6 @@
         <strong id="phase-intro-name"> Abrindo sua Empresa </strong>
       </div>
 
-      <!-- Caixa narrativa das fases de transição -->
-      <div id="narrative-overlay" class="hidden">
-        <div id="narrative-box">
-          <div id="narrative-speaker">📖 Narrador</div>
-
-          <p id="narrative-text"></p>
-
-          <span id="narrative-continue"> Clique para continuar </span>
-        </div>
-      </div>
-
       <!-- Caixa de informação -->
       <div id="info-bubble" class="info-bubble-hidden">
         <span class="info-bubble-content"></span>
@@ -85,14 +104,14 @@
 
       <!-- Overlay de batalha do boss (PAUSA o jogo) -->
       <div id="boss-overlay" class="hidden">
-        <div class="dialogue-badge" id="dialogue-header">⏱ 30s</div>
-
         <div id="boss-dialogue" class="boss-dialogue">
           <div class="boss-name-tag" id="boss-name">BOSS</div>
           <p id="question-text" class="question-bubble">Pergunta?</p>
         </div>
 
         <div id="boss-answers-panel" class="boss-answers-panel hidden">
+          <!-- Relógio agora fica no topo do painel de alternativas -->
+          <div class="timer-badge" id="dialogue-header">⏱ 15s</div>
           <div id="question-options"></div>
         </div>
       </div>
