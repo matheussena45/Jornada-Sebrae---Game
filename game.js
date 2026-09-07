@@ -40,6 +40,7 @@ const SFX = {
   tick: new Audio("assets/audio/countdown_tick.wav"),
   locked: new Audio("assets/audio/locked.mp3"),
   unlock: new Audio("assets/audio/unlock.mp3"),
+  complete: new Audio("assets/audio/completed.wav"),
 };
 SFX.bgm.loop = true;
 SFX.bgm.volume = 0.2;
@@ -48,6 +49,7 @@ SFX.tick.volume = 1.0;
 SFX.tick.loop = false;
 SFX.locked.volume = 0.6;
 SFX.unlock.volume = 0.8;
+SFX.complete.volume = 0.8;
 
 function playSfx(audio) {
   try {
@@ -169,7 +171,7 @@ const PHASES = [
       portraitHeight: 180,
       dialogueBottom: 195,
       greeting:
-        "Olá! Sou um Analista do Sebrae. Antes de você seguir sua jornada, vamos ver o que você já sabe sobre o Sebrae e a FINECAP!",
+        "Olá! Sou Ralph Juliano, Analista do Sebrae. Antes de você seguir sua jornada, vamos ver o que você já sabe sobre o Sebrae e a FINECAP!",
       introLines: [
         "Vamos lá, primeira pergunta:",
         "Show de bola! Próxima:",
@@ -305,7 +307,7 @@ const PHASES = [
   },
   {
     id: "fase2",
-    name: "Trilha Digital",
+    name: "Presença Digital",
     startX: 80,
     startDirection: "right",
     hasBoss: true,
@@ -328,21 +330,21 @@ const PHASES = [
       {
         x: 345,
         y: 300,
-        text: "Olá! Seja muito bem-vindo ao Sebrae. Estamos felizes em ajudar você nessa nova etapa da sua empresa.",
+        text: "Estar no Google não exige ter site: com o Perfil da Empresa gratuito, clientes locais acham seu endereço, horário e telefone facilmente.",
       },
       {
         x: 700,
         y: 90,
-        text: "Uma empresa organizada acompanha suas finanças e mantém seus documentos sempre em dia.",
+        text: "No WhatsApp, não envie apenas o preço. Entenda a necessidade do cliente, atenda rápido e conduza a conversa para fechar a venda.",
       },
       {
         x: 1200,
         y: 290,
-        text: "Controlar receitas, despesas e impostos ajuda o empresário a tomar decisões muito mais seguras.",
+        text: "Seguidores não pagam contas. Foque em produzir conteúdo útil para o seu público e use a IA para ter ideias e agilizar seus posts.",
       },
     ],
     boss: {
-      name: "Gerente do Sebrae",
+      name: "Estrategista Digital",
       portrait: {
         idle: "boss2_idle.png",
         talk: "boss2_talk.png",
@@ -351,157 +353,158 @@ const PHASES = [
       portraitHeight: 200,
       dialogueBottom: 240,
       greeting:
-        "Seja bem-vindo ao Sebrae RN. Sou Leonel Pontes e vou avaliar seus conhecimentos sobre organização financeira.",
+        "Seja bem-vindo à Trilha Digital! Vamos avaliar se sua empresa está realmente preparada para atrair, atender e vender na internet.",
       introLines: [
-        "Vamos à primeira questão:",
-        "Muito bem. Sigamos para a próxima:",
-        "Última questão, atenção redobrada aqui:",
+        "Primeiro desafio sobre presença digital:",
+        "Muito bem. Vamos elevar o nível na próxima:",
+        "Última pergunta da etapa, foco total:",
       ],
       correctLines: [
-        "Correto. Você demonstra bom entendimento do assunto.",
-        "Exatamente isso. Prossigamos.",
-        "Resposta precisa. Muito bem.",
+        "Perfeito! Visão estratégica afiada.",
+        "Exatamente isso! Atendimento e presença andam juntos.",
+        "Resposta precisa. Você domina esse fundamento.",
       ],
       wrongLines: [
-        "Não é bem assim. Deixe-me esclarecer:",
-        "Esse é um ponto que exige atenção. Veja bem:",
-        "Vamos revisar esse conceito com calma:",
+        "Cuidado, essa é uma armadilha comum na internet:",
+        "Não exatamente. Veja onde está o detalhe:",
+        "Atenção a este ponto crítico do digital:",
       ],
       resultMessages: {
-        3: "Desempenho excelente. Você demonstrou domínio sólido sobre organização financeira e tributária.",
-        2: "Bom resultado. Você já tem uma base sólida, mas ainda há pontos importantes para aprofundar.",
-        1: "Você acertou parte dos conceitos, mas ainda vale revisar alguns pontos importantes para a gestão do seu negócio.",
-        0: "Esses conceitos ainda precisam de mais atenção. Estudar um pouco mais fará toda a diferença na gestão da sua empresa.",
+        3: "Excelente! Você compreende perfeitamente os pilares da presença digital e atendimento moderno.",
+        2: "Muito bom resultado! Você já tem boa noção prática, faltando apenas alinhar detalhes de conversão.",
+        1: "Você acertou alguns pontos, mas ainda comete erros comuns que custam clientes no dia a dia.",
+        0: "Atenção: sua presença digital precisa de ajustes urgentes para não perder vendas para a concorrência.",
       },
       questions: [
+        // 1. Fácil (Básico Q1)
         {
-          q: "Para que serve a guia DAS?",
+          q: "Ter muitos seguidores significa vender mais?",
           options: [
-            "Comprovar o pagamento dos impostos",
-            "Aplicar multa por atraso",
-            "Organizar documentos internos",
-            "Servir apenas para grandes empresas",
+            "Sim, sempre",
+            "Não. Seguidores não garantem vendas",
+            "Sim, acima de mil seguidores",
+            "Apenas no Instagram",
+          ],
+          correct: 1,
+          explanation:
+            "Seguidores representam alcance, mas vendas dependem de público qualificado, produto adequado, confiança e bom atendimento.",
+        },
+        // 2. Fácil (Básico Q2)
+        {
+          q: "O WhatsApp pode ser um canal de vendas?",
+          options: [
+            "Não, serve apenas para conversar",
+            "Sim, para atender, negociar e vender",
+            "Apenas para grandes empresas",
+            "Somente para enviar promoções",
+          ],
+          correct: 1,
+          explanation:
+            "O WhatsApp se tornou um dos principais canais comerciais diretos, permitindo tirar dúvidas, enviar propostas e fechar vendas.",
+        },
+        // 3. Fácil (Básico Q3)
+        {
+          q: "Sua empresa pode aparecer no Google sem ter um site?",
+          options: [
+            "Não",
+            "Sim, com o Perfil da Empresa no Google",
+            "Apenas pagando anúncios",
+            "Somente se tiver Instagram",
+          ],
+          correct: 1,
+          explanation:
+            "Com o Perfil da Empresa no Google (antigo Google Meu Negócio), sua empresa aparece nas buscas locais e no Google Maps gratuitamente.",
+        },
+        // 4. Fácil (Básico Q5)
+        {
+          q: "O que é tráfego pago?",
+          options: [
+            "Venda feita pelo WhatsApp",
+            "Divulgação por meio de anúncios pagos",
+            "Publicação feita no Instagram",
+            "Cadastro da empresa no Google",
+          ],
+          correct: 1,
+          explanation:
+            "Tráfego pago consiste em investir dinheiro em plataformas como Meta Ads ou Google Ads para exibir sua mensagem a um público específico.",
+        },
+        // 5. Fácil (Básico Q10)
+        {
+          q: "A IA pode ajudar na criação de posts?",
+          options: [
+            "Não",
+            "Sim, com ideias, textos e planejamento",
+            "Apenas criando imagens",
+            "Somente em anúncios pagos",
+          ],
+          correct: 1,
+          explanation:
+            "Ferramentas de IA generativa auxiliam na geração de temas, criação de legendas, roteiros e organização do cronograma de postagens.",
+        },
+        // 6. Média (Intermediário Q11)
+        {
+          q: "Seu cliente procura sua empresa no Google e não encontra. O que precisa melhorar?",
+          options: [
+            "Apenas a fachada",
+            "Sua presença digital no Google",
+            "O estoque",
+            "O número de funcionários",
+          ],
+          correct: 1,
+          explanation:
+            "Criar e manter atualizado o Perfil da Empresa no Google garante que clientes encontrem seu horário, contato e localização.",
+        },
+        // 7. Média (Intermediário Q14)
+        {
+          q: "Sua empresa recebe muitos contatos no WhatsApp, mas vende pouco. O que deve analisar?",
+          options: [
+            "Apenas o número de contatos",
+            "Como os clientes estão sendo atendidos",
+            "O número de grupos",
+            "A foto do perfil",
+          ],
+          correct: 1,
+          explanation:
+            "Muitas mensagens sem conversão indicam falhas na abordagem, demora na resposta, falta de clareza ou ausência de condução para o fechamento.",
+        },
+        // 8. Média (Intermediário Q16)
+        {
+          q: "Uma avaliação positiva no Google pode:",
+          options: [
+            "Aumentar a confiança de novos clientes",
+            "Garantir a primeira posição no Google",
+            "Substituir o atendimento",
+            "Eliminar a necessidade de divulgação",
           ],
           correct: 0,
           explanation:
-            "No Simples Nacional, a DAS reúne vários impostos em uma única guia e comprova que eles foram pagos.",
+            "Avaliações de clientes reais servem como prova social, aumentando a credibilidade e influenciando diretamente a decisão de compra.",
         },
-
+        // 9. Média (Intermediário Q18)
         {
-          q: "Escolher o regime tributário:",
+          q: "A IA criou um texto para sua empresa. O que fazer antes de publicar?",
           options: [
-            "Não altera os impostos da empresa",
-            "Pode mudar quanto a empresa paga de impostos",
-            "Só importa para empresas com prejuízo",
-            "É uma decisão tomada pelo banco",
+            "Publicar imediatamente",
+            "Revisar e adaptar ao seu negócio",
+            "Acrescentar várias hashtags",
+            "Transformar tudo em anúncio",
           ],
           correct: 1,
           explanation:
-            "Cada regime possui regras diferentes. Escolher o mais adequado pode reduzir custos e evitar pagamentos desnecessários.",
+            "A IA serve como assistente; o empresário deve sempre conferir a precisão das informações e dar o tom de voz autêntico da sua marca.",
         },
-
+        // 10. Média (Intermediário Q20)
         {
-          q: "O Balanço Patrimonial mostra:",
+          q: "O cliente chama no WhatsApp perguntando apenas 'quanto custa?'. Uma boa resposta é:",
           options: [
-            "As vendas realizadas no dia",
-            "A situação financeira da empresa",
-            "Somente dados para empréstimos",
-            "As notas fiscais emitidas",
+            "Enviar somente o preço",
+            "Entender a necessidade e apresentar a solução",
+            "Pedir que veja o Instagram",
+            "Esperar ele perguntar novamente",
           ],
           correct: 1,
           explanation:
-            "O Balanço Patrimonial apresenta os bens, as dívidas e o patrimônio da empresa em uma data específica.",
-        },
-
-        {
-          q: "O que é o Simples Nacional?",
-          options: [
-            "Regime que facilita os impostos de pequenas empresas",
-            "Aplicativo para pagar tributos",
-            "Linha de crédito empresarial",
-            "Regime exclusivo para grandes empresas",
-          ],
-          correct: 0,
-          explanation:
-            "O Simples Nacional simplifica o pagamento de impostos ao reunir diversos tributos em uma única guia.",
-        },
-
-        {
-          q: "A declaração anual de faturamento serve para:",
-          options: [
-            "Conferir se os impostos estão corretos",
-            "Substituir os pagamentos mensais",
-            "Informar apenas empresas com prejuízo",
-            "Cumprir uma formalidade sem efeitos",
-          ],
-          correct: 0,
-          explanation:
-            "Ela permite que o governo compare o faturamento informado com os impostos pagos pela empresa.",
-        },
-
-        {
-          q: "Qual a diferença entre faturamento e lucro?",
-          options: [
-            "São exatamente a mesma coisa",
-            "Faturamento é receita; lucro é o que sobra",
-            "Faturamento é o dinheiro em caixa",
-            "Lucro sempre é maior que o faturamento",
-          ],
-          correct: 1,
-          explanation:
-            "Faturamento é tudo o que a empresa recebe com vendas. Lucro é o valor restante após pagar todas as despesas.",
-        },
-
-        {
-          q: "O que é a folha de pagamento?",
-          options: [
-            "Lista com os nomes dos funcionários",
-            "Cálculo de salários e encargos",
-            "Relatório das vendas da empresa",
-            "Registro das compras realizadas",
-          ],
-          correct: 1,
-          explanation:
-            "A folha reúne salários, descontos, benefícios e encargos trabalhistas de todos os funcionários.",
-        },
-
-        {
-          q: "O que é o pró-labore?",
-          options: [
-            "Imposto pago pelas empresas",
-            "Remuneração do sócio pelo trabalho",
-            "Distribuição anual dos lucros",
-            "Taxa cobrada pela prefeitura",
-          ],
-          correct: 1,
-          explanation:
-            "O pró-labore é a remuneração do sócio que trabalha na empresa e é diferente da distribuição de lucros.",
-        },
-
-        {
-          q: "O que mostra a DRE?",
-          options: [
-            "Se a empresa teve lucro ou prejuízo",
-            "Os impostos pagos pela empresa",
-            "Os bens e equipamentos da empresa",
-            "Os documentos da abertura da empresa",
-          ],
-          correct: 0,
-          explanation:
-            "A DRE apresenta receitas, custos e despesas, mostrando o resultado financeiro de um período.",
-        },
-
-        {
-          q: "Por que separar as finanças da empresa?",
-          options: [
-            "Não é necessário separar",
-            "Para controlar melhor o negócio",
-            "Porque a conta pessoal é proibida",
-            "Apenas para organizar documentos",
-          ],
-          correct: 1,
-          explanation:
-            "Separar as contas facilita o controle financeiro, evita erros contábeis e ajuda a avaliar o desempenho da empresa.",
+            "Jogar apenas o preço reduz o valor percebido. Identifique primeiro o contexto do cliente para justificar os benefícios do que você vende.",
         },
       ],
     },
@@ -530,21 +533,21 @@ const PHASES = [
       {
         x: 180,
         y: 320,
-        text: "Olá, Seja bem vindo a JS Grilo Contabilidade. Parabéns por chegar até aqui! Agora você vai conhecer assuntos mais avançados da contabilidade. Boa sorte!",
+        text: "Impulsionar botão rápido não é campanha: no gerenciador de anúncios profissional você define o público-alvo exato e mede conversões reais.",
       },
       {
         x: 850,
         y: 240,
-        text: "A legislação muda com frequência. Manter-se atualizado é essencial para qualquer empresa.",
+        text: "Muitos cliques sem compras? Avalie o pós-clique: site lento, oferta confusa ou demora no WhatsApp derrubam qualquer investimento.",
       },
       {
         x: 1180,
         y: 260,
-        text: "A contabilidade não serve apenas para cumprir obrigações. Ela também ajuda a empresa a crescer com mais segurança.",
+        text: "Curtida não paga conta. No tráfego pago, o indicador soberano é o retorno sobre o investimento (ROI) e o custo de cada cliente conquistado.",
       },
     ],
     boss: {
-      name: "Gerente da Empresa",
+      name: "Especialista em Performance",
       portrait: {
         idle: "boss3_idle.png",
         talk: "boss3_talk.png",
@@ -553,157 +556,164 @@ const PHASES = [
       portraitHeight: 210,
       dialogueBottom: 275,
       greeting:
-        "Seja bem-vindo à JS Grilo! Eu me chamo Jaqueline, a responsável pelo escritório. Vamos ver o que você sabe sobre os temas mais avançados da contabilidade?",
+        "Parabéns por chegar ao Acelerador Digital! Vamos analisar sua capacidade de tomar decisões com base em dados, funil de vendas e retorno financeiro.",
+        merchanText:
+        "Quer dominar o marketing e transformar seguidores em clientes reais? Não perca tempo: conheça a solução Acelerador Digital do Sebrae!",
+      qrCode: {
+        image: "assets/images/qrcode_acelerador.png",
+        duration: 25,
+      },
       introLines: [
-        "Vamos à primeira:",
-        "Ótimo! Vamos pra próxima:",
-        "Última pergunta, força:",
+        "Iniciando a bateria estratégica final:",
+        "Muito bom! Vamos aprofundar na análise de dados:",
+        "Última questão decisiva da jornada:",
       ],
       correctLines: [
-        "Isso mesmo, muito bem!",
-        "Perfeito!",
-        "Excelente resposta!",
+        "Leitura analítica impecável!",
+        "Exato! Pensamento de quem domina métricas de verdade.",
+        "Resposta cirúrgica. Decisão tomada com base em resultados!",
       ],
       wrongLines: [
-        "Quase lá.",
-        "Essa é mais avançada, deixa eu explicar:",
-        "Vamos entender juntos:",
+        "Cuidado! Essa falha de análise queima orçamento à toa:",
+        "Não exatamente. No marketing avançado precisamos olhar o funil:",
+        "Atenção: olhar apenas a métrica de vaidade gera prejuízo:",
       ],
       resultMessages: {
-        3: "Impressionante! Você domina até os temas mais avançados da contabilidade. Poucos empresários chegam nesse nível, parabéns!",
-        2: "Muito bom! Você já entende bastante, só alguns detalhes pra aperfeiçoar. E pra isso, contar com uma contabilidade especializada como a JS Grilo faz toda diferença.",
-        1: "Esses temas mais avançados realmente pegam muita gente, e é exatamente pra isso que existe a JS Grilo. Você não precisa saber tudo sozinho, é só contar com a gente!",
-        0: "Não se preocupe, esses são assuntos bem complexos mesmo, até pra quem já tem empresa há um tempo. É justamente por isso que ter uma contabilidade de confiança como a JS Grilo ao seu lado faz toda a diferença.",
+        3: "Desempenho genial! Você demonstrou maturidade para gerenciar orçamentos de tráfego e escalar negócios na internet.",
+        2: "Ótimo resultado! Você já pensa como gestor de tráfego, precisando apenas calibrar alguns pontos de conversão.",
+        1: "Você tem noções importantes, mas ainda confunde métricas de vaidade com vendas reais no fim do mês.",
+        0: "Atenção: investir no digital sem entender a jornada do cliente e o pós-clique resulta em desperdício de dinheiro.",
       },
       questions: [
+        // 1. Média (Intermediário Q12)
         {
-          q: "A Reforma Tributária une alguns impostos em:",
+          q: "Antes de anunciar na internet, é importante saber:",
           options: [
-            "Um único Imposto de Renda",
-            "CBS e IBS",
-            "O fim dos tributos federais",
-            "Mudanças apenas para o MEI",
-          ],
-          correct: 1,
-          explanation:
-            "A Reforma Tributária substitui diversos impostos sobre o consumo por dois novos tributos: CBS e IBS, tornando o sistema mais simples.",
-        },
-
-        {
-          q: "O Imposto Seletivo incide sobre:",
-          options: [
-            "Rendimentos do Imposto de Renda",
-            "Produtos nocivos à saúde ou ao meio ambiente",
-            "Empresas recém-criadas",
-            "Produtos considerados sustentáveis",
-          ],
-          correct: 1,
-          explanation:
-            "O Imposto Seletivo é aplicado sobre produtos que causam impactos à saúde ou ao meio ambiente, como cigarros e bebidas alcoólicas.",
-        },
-
-        {
-          q: "Lucro entre empresas do mesmo grupo é:",
-          options: [
-            "Reconhecido normalmente",
-            "Eliminado até virar lucro real",
-            "Registrado em dobro",
-            "Transformado em dívida",
-          ],
-          correct: 1,
-          explanation:
-            "Enquanto a operação ocorrer apenas dentro do grupo, esse lucro é eliminado na consolidação das demonstrações financeiras.",
-        },
-
-        {
-          q: "O período de transição da reforma é:",
-          options: [
-            "Troca gradual dos tributos antigos pelos novos",
-            "Período sem cobrança de impostos",
-            "Prazo para encerrar empresas",
-            "Benefício exclusivo do MEI",
+            "Quem você deseja alcançar",
+            "Quantos funcionários possui",
+            "Quantos concorrentes existem",
+            "Apenas quanto deseja gastar",
           ],
           correct: 0,
           explanation:
-            "Durante a transição, os tributos atuais e os novos coexistem para permitir uma adaptação gradual.",
+            "Definir a persona e o público-alvo garante que os anúncios sejam exibidos para quem realmente tem interesse e poder de compra.",
         },
-
+        // 2. Média (Intermediário Q13)
         {
-          q: "CBS e IBS 'não cumulativos' significa:",
+          q: "Impulsionar um post e fazer uma campanha estruturada de tráfego pago são a mesma coisa?",
           options: [
-            "O imposto aparece apenas uma vez na nota",
-            "Permitem descontar o imposto pago antes",
-            "São cobrados uma única vez na empresa",
-            "Não geram créditos tributários",
+            "Sim, sempre",
+            "Não. Uma campanha permite estratégias mais completas",
+            "Sim, no Instagram",
+            "Apenas para pequenos negócios",
           ],
           correct: 1,
           explanation:
-            "A empresa pode aproveitar créditos dos impostos pagos nas etapas anteriores, evitando o chamado 'imposto sobre imposto'.",
+            "Campanhas profissionais permitem escolher objetivos de conversão específicos, testar criativos, instalar pixels e mensurar retornos exatos.",
         },
-
+        // 3. Média (Intermediário Q15)
         {
-          q: "No encerramento do exercício a empresa:",
+          q: "Qual prática ajuda a vender pelo WhatsApp?",
           options: [
-            "Fecha e reabre suas atividades",
-            "Apura resultados e prepara relatórios",
-            "Recebe perdão automático de impostos",
-            "Encerra todos os contratos de trabalho",
+            "Enviar mensagens para todos diariamente",
+            "Entender a necessidade do cliente e conduzir o atendimento",
+            "Responder apenas com áudios",
+            "Enviar somente o preço",
           ],
           correct: 1,
           explanation:
-            "Nesse momento, a empresa organiza suas contas e elabora as demonstrações contábeis do período.",
+            "Venda consultiva exige escuta ativa, qualificação do interesse e condução clara para a tomada de decisão.",
         },
-
+        // 4. Média (Intermediário Q17)
         {
-          q: "Consolidar balanços de um grupo é:",
+          q: "Para produzir conteúdo relevante, a empresa deve pensar primeiro:",
           options: [
-            "Somar os balanços sem ajustes",
-            "Unir as demonstrações eliminando operações internas",
-            "Criar um relatório de marketing",
-            "Declarar todos os impostos do grupo",
+            "No que seu público precisa ou deseja saber",
+            "No número de publicações",
+            "Na quantidade de hashtags",
+            "Apenas nos produtos mais caros",
+          ],
+          correct: 0,
+          explanation:
+            "Conteúdo que gera autoridade e engajamento resolve dores e tira dúvidas reais que o cliente enfrenta no dia a dia.",
+        },
+        // 5. Média (Intermediário Q19)
+        {
+          q: "Seu anúncio alcança muitas pessoas, mas poucas demonstram interesse. Uma possível causa é:",
+          options: [
+            "Público ou mensagem inadequados",
+            "Excesso de vendas",
+            "Muitas avaliações no Google",
+            "Responder rápido demais",
+          ],
+          correct: 0,
+          explanation:
+            "Se o criativo (imagem/texto) não dialoga com o interesse do público segmentado, o anúncio é ignorado.",
+        },
+        // 6. Difícil (Avançado Q21)
+        {
+          q: "Seu anúncio teve muitos cliques, mas poucas vendas. O que deve ser analisado?",
+          options: [
+            "Apenas as curtidas",
+            "O que acontece depois que a pessoa clica",
+            "Apenas o número de seguidores",
+            "Aumentar imediatamente o investimento",
           ],
           correct: 1,
           explanation:
-            "A consolidação reúne as empresas do grupo como se fossem uma só, eliminando transações entre elas.",
+            "O anúncio cumpriu o papel de atrair. A falha está na etapa posterior: página com carregamento lento, preço fora da expectativa ou checkout confuso.",
         },
-
+        // 7. Difícil (Avançado Q22)
         {
-          q: "A ECD (SPED Contábil) é:",
+          q: "Duas campanhas custaram R$ 200. Uma gerou 10 vendas e outra apenas 2. O que importa analisar?",
           options: [
-            "Uma plataforma de vendas",
-            "A contabilidade digital enviada ao governo",
-            "Uma linha de crédito empresarial",
-            "Uma declaração exclusiva para pessoas físicas",
+            "Qual teve mais curtidas",
+            "O resultado gerado por cada campanha",
+            "Qual teve a imagem mais bonita",
+            "Qual alcançou mais seguidores",
           ],
           correct: 1,
           explanation:
-            "A ECD substitui os antigos livros contábeis em papel pelo envio digital das informações ao governo.",
+            "Em anúncios de performance, o Custo por Aquisição (CPA) e o volume de conversão definem qual estratégia deve receber mais verba.",
         },
-
+        // 8. Difícil (Avançado Q24)
         {
-          q: "Imposto 'por fora' na nota significa:",
+          q: "Um anúncio gera muitos contatos no WhatsApp, mas quase nenhuma venda. Onde pode estar o problema?",
           options: [
-            "O preço diminui automaticamente",
-            "O valor do imposto fica mais transparente",
-            "Os impostos deixam de existir",
-            "O produto não possui tributos",
+            "Apenas no anúncio",
+            "Na etapa de atendimento e conversão",
+            "No número de seguidores",
+            "Na quantidade de publicações",
           ],
           correct: 1,
           explanation:
-            "O consumidor consegue visualizar com mais clareza quanto do valor pago corresponde aos tributos.",
+            "Se o lead chega até a conversa, o gargalo está na negociação humana: demora na resposta, falta de script de vendas ou má condução comercial.",
         },
-
+        // 9. Difícil (Avançado Q25)
         {
-          q: "O que é o ágio (goodwill)?",
+          q: "Você investiu R$ 300 em anúncios e gerou R$ 3.000 em vendas. Qual informação ainda é importante para avaliar o resultado?",
           options: [
-            "Perda de valor dos bens da empresa",
-            "Valor pago acima do patrimônio esperado",
-            "Provisão para possíveis dívidas",
-            "Capital usado nas operações diárias",
+            "Custos e retorno obtido com a campanha",
+            "Número de seguidores",
+            "Quantidade de posts publicados",
+            "Número de concorrentes",
+          ],
+          correct: 0,
+          explanation:
+            "Faturamento bruto não é lucro. É indispensável calcular o Retorno sobre Investimento Publicitário (ROAS) descontando o custo das mercadorias vendidas e taxas.",
+        },
+        // 10. Difícil (Avançado Q30)
+        {
+          q: "Qual estratégia digital tende a ser mais eficiente?",
+          options: [
+            "Publicar muito sem analisar resultados",
+            "Atrair, atender e acompanhar os resultados",
+            "Investir apenas em seguidores",
+            "Estar em todas as redes sociais",
           ],
           correct: 1,
           explanation:
-            "O ágio representa o valor pago além do patrimônio da empresa, considerando benefícios futuros como marca, clientes e potencial de lucro.",
+            "O ciclo sustentável de vendas online consiste no funil completo: atração qualificada, atendimento ágil e acompanhamento contínuo de métricas.",
         },
       ],
     },
@@ -1297,19 +1307,35 @@ function startBossBattle(scene, phaseConfig, bossSprite, onComplete) {
   // Mostra a mensagem final (varia conforme o desempenho: 3/3, 2/3, 1/3 ou 0/3) antes de liberar a saída
   function finishBattleWithResult() {
     const msg = phaseConfig.boss.resultMessages?.[battleCorrectCount];
+
+    const proceedToMerchanOrFinish = () => {
+      if (phaseConfig.boss.merchanText && phaseConfig.boss.qrCode) {
+        typeText(phaseConfig.boss.merchanText, () => {
+          setTimeout(() => {
+            if (isStale()) return;
+            overlay.classList.add("hidden");
+            showQRCodeModal(phaseConfig.boss.qrCode, () => {
+              finishBossUI();
+              onComplete();
+            });
+          }, 1600);
+        });
+      } else {
+        overlay.classList.add("hidden");
+        finishBossUI();
+        onComplete();
+      }
+    };
+
     if (msg) {
       typeText(msg, () => {
         setTimeout(() => {
           if (isStale()) return;
-          overlay.classList.add("hidden");
-          finishBossUI();
-          onComplete();
+          proceedToMerchanOrFinish();
         }, 1800);
       });
     } else {
-      overlay.classList.add("hidden");
-      finishBossUI();
-      onComplete();
+      proceedToMerchanOrFinish();
     }
   }
 
@@ -1732,7 +1758,7 @@ class MapScene extends Phaser.Scene {
       },
       {
         id: 1,
-        name: "TRILHA DIGITAL",
+        name: "PRESENÇA DIGITAL",
         x: 510,
         y: 200,
         arrowX: 510,
@@ -1792,7 +1818,6 @@ class MapScene extends Phaser.Scene {
       );
 
       if (status === "completed") {
-        // Cria o ícone com escala 0 (invisível)
         const check = this.add
           .image(island.iconX, island.iconY, "icon_check")
           .setOrigin(0.5)
@@ -1800,14 +1825,22 @@ class MapScene extends Phaser.Scene {
           .setScale(0)
           .setAlpha(0);
 
-        // Adiciona um tween de "Pop-up" elástico (efeito bounce)
+        // Identifica se esta ilha foi a que acabou de ser vencida
+        const justCompleted = isUnlocking && island.id === GameData.lastPhaseIndex;
+
+        // Animação de "Pop-up" elástico com disparo do áudio
         this.tweens.add({
           targets: check,
-          scale: 0.5, // Tamanho final do ícone
+          scale: 0.5,
           alpha: 1,
           duration: 600,
           ease: "Back.easeOut",
-          delay: island.id * 150, // Atraso cascata: se houver mais de um, eles aparecem um por um
+          delay: island.id * 150,
+          onStart: () => {
+            if (justCompleted) {
+              playSfx(SFX.complete);
+            }
+          },
         });
       } else if (status === "locked") {
         island.lockedImg = this.add
@@ -2512,7 +2545,7 @@ class PhaseScene extends Phaser.Scene {
             blink: "narrador_blink",
           },
           null,
-          "Excelente! Entramos na Trilha Digital. Agora vamos entender como funciona a organização financeira.",
+          "Muito bem! Agora entramos na etapa de Presença Digital. Hoje, o cliente procura sua empresa na palma da mão antes de comprar.",
           () => {
             // Parte 2: Conceitos
             chamarNarrador(
@@ -2524,7 +2557,7 @@ class PhaseScene extends Phaser.Scene {
                 blink: "narrador_blink",
               },
               null,
-              "Aqui você vai ver conceitos essenciais como o Simples Nacional, a guia DAS e o controle de receitas e despesas!",
+              "Fique atento aos murais: vamos entender como ser achado no Google, como atender no WhatsApp de verdade e como usar a IA a seu favor!",
               () => {
                 // Retoma o jogo após o fim da segunda parte da Fase 2
                 GameData.paused = false;
@@ -2540,8 +2573,8 @@ class PhaseScene extends Phaser.Scene {
 
         if (cfg.id === "fase3") {
           textoNarrador =
-            "Chegamos ao desafio final! Aqui na JS Grilo vamos tratar de assuntos mais avançados e estratégicos da contabilidade.";
-        }
+            "Chegamos ao desafio final: o Acelerador Digital! Aqui você colocará à prova suas decisões sobre tráfego pago, análise de funil e retorno financeiro real.";
+        } 
 
         if (textoNarrador) {
           GameData.paused = true;
@@ -2868,6 +2901,7 @@ if (restartBtn) {
     rankingOverlay.classList.add("hidden");
     document.getElementById("boss-overlay").classList.add("hidden");
     document.getElementById("info-bubble").classList.add("info-bubble-hidden");
+    document.getElementById("qrcode-modal")?.classList.add("hidden");
 
     stopSfx(SFX.bgm);
 
@@ -2893,4 +2927,42 @@ if (restartBtn) {
     const nameWarning = document.getElementById("name-warning");
     if (nameWarning) nameWarning.classList.add("hidden");
   });
+}
+
+function showQRCodeModal(qrConfig, onDone) {
+  const modal = document.getElementById("qrcode-modal");
+  const img = document.getElementById("qrcode-img");
+  const timerSpan = document.getElementById("qrcode-timer");
+  const closeBtn = document.getElementById("qrcode-close-btn");
+
+  if (!modal || !img) {
+    if (onDone) onDone();
+    return;
+  }
+
+  if (qrConfig.image) img.src = qrConfig.image;
+  let timeLeft = qrConfig.duration || 25;
+  timerSpan.textContent = timeLeft;
+  modal.classList.remove("hidden");
+
+  let qrInterval = null;
+
+  const cleanup = () => {
+    clearInterval(qrInterval);
+    modal.classList.add("hidden");
+    closeBtn.onclick = null;
+    if (onDone) onDone();
+  };
+
+  closeBtn.onclick = () => {
+    cleanup();
+  };
+
+  qrInterval = setInterval(() => {
+    timeLeft -= 1;
+    timerSpan.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      cleanup();
+    }
+  }, 1000);
 }
