@@ -1019,7 +1019,7 @@ function buildAllTextures(scene) {
 // TELA DE FIM DE JOGO (vitória ou derrota) — pontuação salva automaticamente
 // ---------------------------------------------------------
 function endGame(won) {
-  if (GameData.hasEnded) return; // evita salvar o ranking duas vezes na mesma partida
+  if (GameData.hasEnded) return; 
   GameData.hasEnded = true;
 
   const elapsedSeconds = Math.floor((Date.now() - GameData.startTime) / 1000);
@@ -1027,22 +1027,39 @@ function endGame(won) {
 
   saveRankingEntry(GameData.playerName, finalScore, elapsedSeconds);
 
-  document.getElementById("end-overlay").classList.remove("hidden");
-  document.getElementById("end-title").textContent = won
-    ? "🏆 Parabéns!"
-    : "Game Over";
-  document.getElementById("end-message").textContent = won
-    ? "Você completou as três fases e agora conhece melhor os desafios da gestão empresarial!"
-    : "Você ficou sem vidas no meio da jornada. Que tal tentar de novo?";
+  // Lógica isolada para exibir a tela de pontuação
+  const showGameOverScreen = () => {
+    document.getElementById("end-overlay").classList.remove("hidden");
+    document.getElementById("end-title").textContent = won ? "🏆 Parabéns!" : "Game Over";
+    document.getElementById("end-message").textContent = won
+      ? "Você completou as três fases e agora conhece melhor os desafios da gestão empresarial!"
+      : "Você ficou sem vidas no meio da jornada. Que tal tentar de novo?";
 
-  document.getElementById("end-score").innerHTML = `
-    Respostas corretas: ${GameData.correctAnswers}<br/>
-    Vidas restantes: ${GameData.lives}<br/>
-    Tempo total: ${elapsedSeconds}s<br/>
-    Murais lidos (curiosidade, não pontua): ${GameData.infosSeen.size}<br/>
-    <strong>Pontuação final: ${finalScore}</strong><br/>
-    ${formatMessageForScore(finalScore)}
-  `;
+    document.getElementById("end-score").innerHTML = `
+      Respostas corretas: ${GameData.correctAnswers}<br/>
+      Vidas restantes: ${GameData.lives}<br/>
+      Tempo total: ${elapsedSeconds}s<br/>
+      Murais lidos (curiosidade, não pontua): ${GameData.infosSeen.size}<br/>
+      <strong>Pontuação final: ${finalScore}</strong><br/>
+      ${formatMessageForScore(finalScore)}
+    `;
+  };
+
+  // Se perdeu o jogo, mostra o modal do QR Code primeiro
+  if (!won) {
+    showQRCodeModal({
+      image: "assets/images/qrcode_acelerador.png",
+      duration: 30, // Tempo de tela para o Game Over
+      title: "Não desista do seu negócio!",
+      text: "Quer dominar o marketing e transformar seguidores em clientes reais? Aponte a câmera e conheça o Acelerador Digital do Sebrae antes de jogar novamente:"
+    }, () => {
+      // Assim que o timer acabar (ou o jogador fechar), mostra o Game Over normal
+      showGameOverScreen();
+    });
+  } else {
+    // Se ganhou, o boss final já mostrou o QR Code, então vai direto pra tela de vitória
+    showGameOverScreen();
+  }
 }
 
 // ---------------------------------------------------------
@@ -1806,7 +1823,7 @@ class MapScene extends Phaser.Scene {
       }
 
       const zone = this.add
-        .zone(island.x, island.y, 160, 140)
+        .zone(island.x, island.y - 30, 220, 220)
         .setInteractive({ useHandCursor: true })
         .setDepth(20);
       this.criarPlacaArredondada(
@@ -2934,14 +2951,20 @@ function showQRCodeModal(qrConfig, onDone) {
   const img = document.getElementById("qrcode-img");
   const timerSpan = document.getElementById("qrcode-timer");
   const closeBtn = document.getElementById("qrcode-close-btn");
+  const titleEl = document.getElementById("qrcode-title");
+  const textEl = document.getElementById("qrcode-text");
 
   if (!modal || !img) {
     if (onDone) onDone();
     return;
   }
 
+  // Preenche a imagem, título e texto (se existirem na configuração)
   if (qrConfig.image) img.src = qrConfig.image;
-  let timeLeft = qrConfig.duration || 25;
+  if (qrConfig.title && titleEl) titleEl.textContent = qrConfig.title;
+  if (qrConfig.text && textEl) textEl.textContent = qrConfig.text;
+
+  let timeLeft = qrConfig.duration || 30;
   timerSpan.textContent = timeLeft;
   modal.classList.remove("hidden");
 
