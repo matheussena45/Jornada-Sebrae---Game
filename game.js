@@ -1,5 +1,5 @@
 // =========================================================
-// EMPRESÁRIO EM AÇÃO — protótipo jogável
+// Jornada Sebrae — protótipo jogável
 //
 // COMO PERSONALIZAR:
 //  - Cores da marca: editar THEME (abaixo) + :root em style.css (manter os dois sincronizados)
@@ -8,7 +8,7 @@
 //  - Textos "Sobre o escritório" / "Sobre o criador": editar diretamente no index.html
 // =========================================================
 
-const RANKING_KEY = "empresario_ranking_v1";
+const RANKING_KEY = "jornada_sebrae_finecap_v1";
 const MAX_LIVES = 6;
 const INFO_PROXIMITY_RADIUS = 90; // px — raio em que o mural fica visível
 const ANSWER_SECONDS = 15; // tempo pra responder depois que as alternativas aparecem
@@ -39,7 +39,7 @@ const SFX = {
   type: new Audio("assets/audio/type_blip.wav"),
   tick: new Audio("assets/audio/countdown_tick.wav"),
   locked: new Audio("assets/audio/locked.mp3"),
-  unlock: new Audio("assets/audio/unlock.mp3")
+  unlock: new Audio("assets/audio/unlock.mp3"),
 };
 SFX.bgm.loop = true;
 SFX.bgm.volume = 0.2;
@@ -129,14 +129,14 @@ const PHASES = [
     hasBoss: true,
     exitInitiallyOpen: false,
     phaseNumber: 1,
-    phaseLabel: "Fase 1",
+    phaseLabel: "Fase Boas Vindas",
     skyColor: 0x18233d,
     groundColor: 0x2c3350,
     decorColor: 0x22304f,
     levelWidth: 1990,
-    bg: "street_bg_3.jpg",
+    bg: "street_bg.jpg",
     bossX: 1750,
-    bossY: 500,
+    bossY: 510,
     doorX: 1770,
     groundY: 500,
     showExitArrow: false,
@@ -146,26 +146,30 @@ const PHASES = [
       {
         x: 350,
         y: 325,
-        text: "Se você está começando um negócio, lembre-se: organizar tudo desde o início evita muita dor de cabeça no futuro.",
+        text: "O Sebrae atua há 53 anos no RN focando na gestão, inovação e no apoio a pequenos negócios com soluções como o EMPRETEC.",
       },
       {
         x: 845,
         y: 330,
-        text: "Muita gente acha que abrir uma empresa é só conseguir um CNPJ, mas existem outras responsabilidades importantes.",
+        text: "FINECAP significa Feira Intermunicipal de Educação, Cultura, Turismo e Negócios do Alto Oeste Potiguar.",
       },
       {
         x: 1250,
         y: 330,
-        text: "Cada decisão tomada no início da empresa pode fazer diferença lá na frente. Vale a pena conhecer bem cada etapa.",
+        text: "Reconhecida como Patrimônio Cultural Imaterial, a FINECAP chega à sua 29ª edição em 2026, com sua tradicional Feira de Negócios!",
       },
     ],
     boss: {
       name: "Analista do Sebrae",
-      portrait: { idle: "boss1_idle.png", talk: "boss1_talk.png" },
-      portraitHeight: 150, // corpo inteiro — maior que os outros dois (retrato busto)
-      portraitFlip: true,
+      portrait: {
+        idle: "boss1_idle.png",
+        talk: "boss1_talk.png",
+        blink: "boss1_blink.png",
+      },
+      portraitHeight: 180,
+      dialogueBottom: 195,
       greeting:
-        "Olá! Me chamo Franciel Monte, sou o Analista do Sebrae. Antes de você seguir sua jornada, vou ver o que você já aprendeu sobre abrir uma empresa!",
+        "Olá! Sou um Analista do Sebrae. Antes de você seguir sua jornada, vamos ver o que você já sabe sobre o Sebrae e a FINECAP!",
       introLines: [
         "Vamos lá, primeira pergunta:",
         "Show de bola! Próxima:",
@@ -188,183 +192,164 @@ const PHASES = [
         0: "Não foi dessa vez, mas o importante é continuar aprendendo. Vamos em frente!",
       },
       questions: [
+        // --- PERGUNTAS SOBRE O SEBRAE ---
         {
-          q: "Para que serve o CNPJ?",
+          q: "O Sebrae atua principalmente no apoio a:",
           options: [
-            "Identifica oficialmente a empresa perante o governo",
-            "Identifica a principal conta bancária da empresa",
-            "Comprova a qualidade dos serviços da empresa",
-            "Substitui o CPF do proprietário da empresa",
+            "Apenas grandes empresas",
+            "Pequenos negócios e empreendedores",
+            "Apenas órgãos públicos",
+            "Somente indústrias",
+          ],
+          correct: 1,
+          explanation:
+            "O foco principal do Sebrae é apoiar, capacitar e fortalecer os micro e pequenos negócios e os empreendedores locais.",
+        },
+        {
+          q: "A sigla Sebrae significa:",
+          options: [
+            "Serviço Brasileiro de Apoio às Micro e Pequenas Empresas",
+            "Sistema Brasileiro de Administração Empresarial",
+            "Serviço Brasileiro de Apoio ao Emprego",
+            "Sistema Brasileiro de Empreendedorismo",
           ],
           correct: 0,
           explanation:
-            "O CNPJ funciona como a identidade da empresa. É por meio dele que ela existe oficialmente e pode exercer suas atividades de forma legal.",
+            "Sebrae significa Serviço Brasileiro de Apoio às Micro e Pequenas Empresas, sendo a principal instituição de fomento ao empreendedorismo do país.",
         },
-
         {
-          q: "O que é o MEI?",
+          q: "Qual destes temas faz parte da atuação do Sebrae?",
           options: [
-            "Uma linha de crédito para empreendedores",
-            "Uma forma simples de formalizar pequenos negócios",
-            "Um imposto destinado às grandes empresas",
-            "Um curso obrigatório para abrir empresas",
-          ],
-          correct: 1,
-          explanation:
-            "O MEI facilita a formalização de pequenos empreendedores, permitindo atuar legalmente com menos burocracia e menor custo.",
-        },
-
-        {
-          q: "Empresa formalizada deve:",
-          options: [
-            "Ficar isenta de todos os impostos",
-            "Emitir notas fiscais e pagar impostos",
-            "Deixar de prestar informações ao governo",
-            "Contratar funcionários imediatamente",
-          ],
-          correct: 1,
-          explanation:
-            "Ao formalizar a empresa, ela passa a ter direitos, como emitir nota fiscal, mas também assume obrigações fiscais.",
-        },
-
-        {
-          q: "Razão social é:",
-          options: [
-            "O nome usado nas redes sociais",
-            "O nome oficial registrado da empresa",
-            "O endereço principal da empresa",
-            "O valor investido pelos sócios",
-          ],
-          correct: 1,
-          explanation:
-            "A razão social é o nome registrado nos documentos oficiais. Ela pode ser diferente do nome fantasia usado pelos clientes.",
-        },
-
-        {
-          q: "Para abrir conta PJ é preciso:",
-          options: [
-            "CPF e comprovante de residência",
-            "CNPJ e documentos da empresa",
-            "Comprovante de faturamento anual",
-            "Autorização emitida pelo contador",
-          ],
-          correct: 1,
-          explanation:
-            "Os bancos precisam confirmar que a empresa existe legalmente, por isso exigem o CNPJ e seus documentos.",
-        },
-
-        {
-          q: "Por que contratar contador?",
-          options: [
-            "Atender somente empresas de grande porte",
-            "Cuidar das obrigações fiscais e contábeis",
-            "Realizar as vendas da empresa",
-            "Assumir a administração do negócio",
-          ],
-          correct: 1,
-          explanation:
-            "O contador ajuda a empresa a cumprir suas obrigações legais, organizar as finanças e evitar problemas com o Fisco.",
-        },
-
-        {
-          q: "Regime tributário é:",
-          options: [
-            "O horário de funcionamento da empresa",
-            "As regras para calcular os impostos",
-            "O tipo de produto comercializado",
-            "A quantidade máxima de sócios",
-          ],
-          correct: 1,
-          explanation:
-            "O regime tributário define como os impostos serão calculados e pagos pela empresa, de acordo com a legislação.",
-        },
-
-        {
-          q: "Por que guardar notas fiscais?",
-          options: [
-            "Porque elas não podem ser descartadas",
-            "Para comprovar despesas e organizar a empresa",
-            "Para decorar o arquivo da empresa",
-            "Para trocar produtos comprados",
-          ],
-          correct: 1,
-          explanation:
-            "As notas fiscais ajudam no controle financeiro, comprovam despesas e podem ser exigidas em fiscalizações.",
-        },
-
-        {
-          q: "Imposto não pago em dia gera:",
-          options: [
-            "Nenhuma consequência para a empresa",
-            "Multas, juros e possíveis restrições",
-            "Perdão automático após alguns dias",
-            "Pagamento feito pelo contador",
-          ],
-          correct: 1,
-          explanation:
-            "O atraso no pagamento pode gerar multas, juros e outras restrições que prejudicam a empresa.",
-        },
-
-        {
-          q: "Alvará de funcionamento é:",
-          options: [
-            "Autorização para funcionar no endereço",
-            "Comprovante de inscrição no MEI",
-            "Seguro obrigatório da empresa",
-            "Contrato firmado entre os sócios",
+            "Gestão e inovação",
+            "Fiscalização de trânsito",
+            "Segurança pública",
+            "Emissão de passaporte",
           ],
           correct: 0,
           explanation:
-            "O alvará é a autorização concedida pela prefeitura para que a empresa possa funcionar legalmente naquele local.",
+            "O Sebrae atua diretamente capacitando empresas e empreendedores em áreas vitais como gestão, inovação, finanças e marketing.",
+        },
+        {
+          q: "Há quantos anos o Sebrae atua no Rio Grande do Norte?",
+          options: ["43 anos", "48 anos", "53 anos", "60 anos"],
+          correct: 2,
+          explanation:
+            "O Sebrae atua há 53 anos no Rio Grande do Norte, transformando a realidade de pequenos negócios em todo o estado.",
+        },
+        {
+          q: "Qual destas é uma solução do Sebrae?",
+          options: ["EMPRETEC", "FGTS", "PIX", "IPTU"],
+          correct: 0,
+          explanation:
+            "O EMPRETEC é um dos principais e mais conceituados seminários de desenvolvimento do comportamento empreendedor oferecidos pelo Sebrae.",
+        },
+
+        // --- PERGUNTAS SOBRE A FINECAP ---
+        {
+          q: "A FINECAP 2026 chega a qual edição?",
+          options: ["25ª", "27ª", "29ª", "30ª"],
+          correct: 2,
+          explanation:
+            "Em 2026, a FINECAP celebra a sua grandiosa 29ª edição, consolidando-se como um dos maiores eventos da região.",
+        },
+        {
+          q: "O que significa a sigla FINECAP?",
+          options: [
+            "Feira Internacional de Negócios de Pau dos Ferros",
+            "Feira Intermunicipal de Educação, Cultura, Turismo e Negócios do Alto Oeste Potiguar",
+            "Festival de Negócios e Cultura do Alto Oeste Potiguar",
+            "Feira de Indústria e Comércio de Pau dos Ferros",
+          ],
+          correct: 1,
+          explanation:
+            "A sigla carrega a essência multissetorial do evento: Feira Intermunicipal de Educação, Cultura, Turismo e Negócios do Alto Oeste Potiguar.",
+        },
+        {
+          q: "Qual atividade também faz parte da programação tradicional da FINECAP, além dos grandes shows?",
+          options: [
+            "Feira de Negócios",
+            "Campeonato estadual de futebol",
+            "Festival de cinema",
+            "Corrida automobilística",
+          ],
+          correct: 0,
+          explanation:
+            "Além dos shows que atraem multidões, a Feira de Negócios é o coração do evento, movimentando a economia e o empreendedorismo.",
+        },
+        {
+          q: "A FINECAP foi reconhecida oficialmente em Pau dos Ferros como:",
+          options: [
+            "Patrimônio Cultural Imaterial",
+            "Patrimônio Histórico Nacional",
+            "Patrimônio Natural do Semiárido",
+            "Patrimônio Turístico Federal",
+          ],
+          correct: 0,
+          explanation:
+            "Pela sua extrema importância histórica, cultural e econômica para a região, a FINECAP foi reconhecida como Patrimônio Cultural Imaterial do município.",
+        },
+        {
+          q: "Além dos shows, a FINECAP também reúne:",
+          options: [
+            "Negócios, cultura, turismo e educação",
+            "Apenas competições esportivas",
+            "Apenas gastronomia",
+            "Somente apresentações musicais",
+          ],
+          correct: 0,
+          explanation:
+            "O evento é amplo e dinâmico, englobando simultaneamente negócios, cultura, turismo e educação no Alto Oeste Potiguar.",
         },
       ],
     },
   },
   {
     id: "fase2",
-    name: "Organizando a Empresa",
+    name: "Trilha Digital",
     startX: 80,
     startDirection: "right",
     hasBoss: true,
     exitInitiallyOpen: false,
     showExitArrow: true,
-    exitDirection: "backward", // seta aponta pra trás (saindo da empresa)
+    exitDirection: "Forward",
     phaseNumber: 2,
-    phaseLabel: "Fase 2",
+    phaseLabel: "Fase 1",
     skyColor: 0x18233d,
     groundColor: 0x2c3350,
     decorColor: 0x22304f,
     levelWidth: 1990,
-    bg: "agencia_bg.png",
-    bossX: 1785,
-    bossY: 292,
-    doorX: 100,
-    groundY: 400,
-    characterScale: 2.2,
+    bg: "tec_bg_00.jpg",
+    bossX: 1770,
+    bossY: 485,
+    doorX: 1770,
+    groundY: 485,
+    characterScale: 2.6,
     infoSpots: [
       {
-        x: 195,
-        y: 235,
+        x: 345,
+        y: 300,
         text: "Olá! Seja muito bem-vindo ao Sebrae. Estamos felizes em ajudar você nessa nova etapa da sua empresa.",
-        textAfterBoss: "Tchau! Foi um prazer te ajudar, volte sempre.",
       },
       {
         x: 700,
-        y: 245,
+        y: 90,
         text: "Uma empresa organizada acompanha suas finanças e mantém seus documentos sempre em dia.",
-        once: true,
       },
       {
-        x: 1400,
-        y: 255,
+        x: 1200,
+        y: 290,
         text: "Controlar receitas, despesas e impostos ajuda o empresário a tomar decisões muito mais seguras.",
-        once: true,
       },
     ],
     boss: {
       name: "Gerente do Sebrae",
-      portrait: { idle: "boss2_idle.png", talk: "boss2_talk.png" },
-      portraitHeight: 90,
+      portrait: {
+        idle: "boss2_idle.png",
+        talk: "boss2_talk.png",
+        blink: "boss2_blink.png",
+      },
+      portraitHeight: 200,
+      dialogueBottom: 240,
       greeting:
         "Seja bem-vindo ao Sebrae RN. Sou Leonel Pontes e vou avaliar seus conhecimentos sobre organização financeira.",
       introLines: [
@@ -523,7 +508,7 @@ const PHASES = [
   },
   {
     id: "fase3",
-    name: "JS Grilo Contabilidade & Gestão",
+    name: "Acelerador Digital",
     startX: 80,
     startDirection: "right",
     hasBoss: true,
@@ -534,37 +519,39 @@ const PHASES = [
     groundColor: 0x2c3350,
     decorColor: 0x22304f,
     levelWidth: 1994,
-    bg: "office_bg.png", // nome do arquivo em assets/backgrounds/
-    // Posição do boss/porta nesta fase (em pixels, dentro da imagem de fundo de 2200x540).
-    // Ajuste bossX/bossY livremente pra encaixar o boss na cadeira/mesa da sua arte.
-    // bossY é a linha do "chão" onde os pés do boss encostam (mesma lógica do player).
-    bossX: 1740,
-    bossY: 315,
-    doorX: 1750, // porta de saída (some até vencer o boss)
-    groundY: 460, // altura em que os PÉS do personagem encostam nesta fase (chão da perspectiva)
-    showExitArrow: false, // fase final: sem seta, o jogo encerra na hora
-    characterScale: 2.7, // tamanho do personagem só nesta fase (perspectivas diferentes = tamanhos diferentes)
+    bg: "tec_bg_01.jpg",
+    bossX: 1820,
+    bossY: 460,
+    doorX: 1750,
+    groundY: 460,
+    showExitArrow: false,
+    characterScale: 2.7,
     infoSpots: [
       {
-        x: 210,
-        y: 230,
+        x: 180,
+        y: 320,
         text: "Olá, Seja bem vindo a JS Grilo Contabilidade. Parabéns por chegar até aqui! Agora você vai conhecer assuntos mais avançados da contabilidade. Boa sorte!",
       },
       {
-        x: 720,
-        y: 230,
+        x: 850,
+        y: 240,
         text: "A legislação muda com frequência. Manter-se atualizado é essencial para qualquer empresa.",
       },
       {
-        x: 1355,
-        y: 210,
+        x: 1180,
+        y: 260,
         text: "A contabilidade não serve apenas para cumprir obrigações. Ela também ajuda a empresa a crescer com mais segurança.",
       },
     ],
     boss: {
-      name: "Gerente da JS Grilo",
-      portrait: { idle: "boss3_idle.png", talk: "boss3_talk.png" },
-      portraitHeight: 100,
+      name: "Gerente da Empresa",
+      portrait: {
+        idle: "boss3_idle.png",
+        talk: "boss3_talk.png",
+        blink: "boss3_blink.png",
+      },
+      portraitHeight: 210,
+      dialogueBottom: 275,
       greeting:
         "Seja bem-vindo à JS Grilo! Eu me chamo Jaqueline, a responsável pelo escritório. Vamos ver o que você sabe sobre os temas mais avançados da contabilidade?",
       introLines: [
@@ -1055,20 +1042,29 @@ function positionBossDialogue(scene, bossSprite) {
   const bounds = bossSprite.getBounds();
   const scrollX = scene.cameras.main.scrollX;
   let screenX = bounds.centerX - scrollX;
-  const screenTopY = bounds.top;
 
+  // Mantém a caixa centralizada horizontalmente no boss, respeitando as margens
   screenX = Math.min(Math.max(screenX, 170), 960 - 170);
 
   const dialogueEl = document.getElementById("boss-dialogue");
   dialogueEl.style.left = `${screenX}px`;
 
-  let bottom = 540 - screenTopY + 26;
-  const boxHeight = dialogueEl.offsetHeight;
-  const maxBottom = 540 - 50 - boxHeight; // deixa folga maior no topo (o cronômetro ocupa esse canto)
-  if (boxHeight > 0 && bottom > maxBottom) {
-    bottom = Math.max(maxBottom, 10);
+  // Lê a altura manual definida na constante PHASES para o boss desta fase específica
+  const manualBottom = scene.config?.boss?.dialogueBottom;
+
+  if (manualBottom !== undefined) {
+    // Usa o valor manual exato que você definir (ex: 180, 220, 250)
+    dialogueEl.style.bottom = `${manualBottom}px`;
+  } else {
+    // Fallback de segurança (caso não haja 'dialogueBottom' configurado na fase)
+    const screenTopY = bounds.top;
+    let bottom = 540 - screenTopY + 18;
+    const boxHeight = dialogueEl.offsetHeight || 120;
+    const minBottom = 160;
+    const maxBottom = 540 - 60 - boxHeight;
+    bottom = Math.min(Math.max(bottom, minBottom), maxBottom);
+    dialogueEl.style.bottom = `${bottom}px`;
   }
-  dialogueEl.style.bottom = `${bottom}px`;
 }
 
 // Frases de transição do "boss falando" — variam um pouco por pergunta pra não ficar repetitivo.
@@ -1129,12 +1125,14 @@ function startBossBattle(scene, phaseConfig, bossSprite, onComplete) {
   }
 
   // Efeito de "digitação" — clicar no balão pula direto pro texto completo
+  // Efeito de "digitação" — clicar no balão pula direto pro texto completo
   function typeText(text, onDone) {
     clearInterval(typeInterval);
     questionEl.textContent = "";
     headerEl.textContent = "";
     typeState.instant = false;
     scene.startBossTalkAnim?.();
+
     let i = 0;
     typeInterval = setInterval(() => {
       if (isStale()) {
@@ -1142,6 +1140,19 @@ function startBossBattle(scene, phaseConfig, bossSprite, onComplete) {
         scene.stopBossTalkAnim?.();
         return;
       }
+
+      // === CORREÇÃO DO PAUSE ===
+      // Se o modal de pause manual estiver aberto, congela a digitação, o áudio e a boca do boss
+      const pauseModal = document.getElementById("pause-modal");
+      if (pauseModal && !pauseModal.classList.contains("hidden")) {
+        scene.stopBossTalkAnim?.();
+        return;
+      } else {
+        // Garante que a boca volte a mexer caso o jogo seja despausado
+        scene.startBossTalkAnim?.();
+      }
+      // =========================
+
       if (typeState.instant) {
         questionEl.textContent = text;
         positionBossDialogue(scene, bossSprite);
@@ -1150,10 +1161,12 @@ function startBossBattle(scene, phaseConfig, bossSprite, onComplete) {
         if (onDone) onDone();
         return;
       }
+
       i += 1;
       questionEl.textContent = text.slice(0, i);
-      playSfx(SFX.type); // <-- aqui
+      playSfx(SFX.type); // O áudio só toca se passar do bloqueio do pause acima
       positionBossDialogue(scene, bossSprite);
+
       if (i >= text.length) {
         clearInterval(typeInterval);
         scene.stopBossTalkAnim?.();
@@ -1207,13 +1220,13 @@ function startBossBattle(scene, phaseConfig, bossSprite, onComplete) {
         clearInterval(timerInterval);
         return;
       }
-      
-      // ADICIONE ESTA LINHA: Se estiver pausado, pula a contagem deste segundo
-      if (GameData.paused) return; 
+
+      const pauseModal = document.getElementById("pause-modal");
+      if (pauseModal && !pauseModal.classList.contains("hidden")) return;
 
       timeLeft -= 1;
       headerEl.textContent = `⏱ ${timeLeft}s`;
-      
+
       if (timeLeft === 5 && !tickPlayedThisQuestion) {
         tickPlayedThisQuestion = true;
         playSfx(SFX.tick);
@@ -1335,9 +1348,17 @@ function typeInfoText(element, text) {
   let charIndex = 0;
 
   infoTypeInterval = setInterval(() => {
+    // === TRAVA DO PAUSE ===
+    // Se o modal de pause estiver aberto, ignora este ciclo (congela texto e áudio)
+    const pauseModal = document.getElementById("pause-modal");
+    if (pauseModal && !pauseModal.classList.contains("hidden")) {
+      return;
+    }
+    // ======================
+
     charIndex += 1;
     element.textContent = text.slice(0, charIndex);
-    playSfx(SFX.type); // <-- aqui
+    playSfx(SFX.type); // Áudio só toca se passar do bloqueio do pause
 
     if (charIndex >= text.length) {
       clearInterval(infoTypeInterval);
@@ -1481,21 +1502,28 @@ function showPhaseIntro(phaseConfig, onComplete) {
 // SISTEMA DO NARRADOR ANIMADO (Ciclo Fluido de 4 Frames Ajustado)
 // ---------------------------------------------------------
 function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
-  const overlay = cena.add.rectangle(480, 270, 960, 540, 0x000000, 0.8)
-    .setOrigin(0.5).setDepth(100).setScrollFactor(0).setInteractive();
+  const overlay = cena.add
+    .rectangle(480, 270, 960, 540, 0x000000, 0.8)
+    .setOrigin(0.5)
+    .setDepth(100)
+    .setScrollFactor(0)
+    .setInteractive();
 
   const box = cena.add.graphics().setDepth(101).setScrollFactor(0);
-  box.fillStyle(0x002B54, 1);
-  box.lineStyle(4, 0xFF8F00, 1);
-  
+  box.fillStyle(0x002b54, 1);
+  box.lineStyle(4, 0xff8f00, 1);
+
   // AJSUTES AQUI: Y subiu de 120 para 80 | Altura aumentou de 280 para 340
   box.fillRoundedRect(230, 80, 500, 340, 16);
   box.strokeRoundedRect(230, 80, 500, 340, 16);
 
   // Avatar puxado levemente para baixo (Y de 175 para 200) para encaixar perfeitamente
-  const avatar = cena.add.image(480, 190, avatarKeys.idle).setDepth(102).setScrollFactor(0);
+  const avatar = cena.add
+    .image(480, 190, avatarKeys.idle)
+    .setDepth(102)
+    .setScrollFactor(0);
 
-  const targetHeight = 165; 
+  const targetHeight = 165;
   const sourceImage = cena.textures.get(avatarKeys.idle).getSourceImage();
   if (sourceImage && sourceImage.height > 0) {
     const scale = targetHeight / sourceImage.height;
@@ -1503,18 +1531,29 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
   }
 
   // Texto da mensagem ajustado de 280 para 295 (desce um pouco, criando o espaço)
-  const messageText = cena.add.text(480, 295, "", {
-    fontSize: '20px',
-    fontFamily: 'Arial',
-    color: '#F4F7F9',
-    align: 'center',
-    wordWrap: { width: 420 }
-  }).setOrigin(0.5, 0).setDepth(102).setScrollFactor(0);
+  const messageText = cena.add
+    .text(480, 295, "", {
+      fontSize: "20px",
+      fontFamily: "Arial",
+      color: "#F4F7F9",
+      align: "center",
+      wordWrap: { width: 420 },
+    })
+    .setOrigin(0.5, 0)
+    .setDepth(102)
+    .setScrollFactor(0);
 
   // Texto "Clique para continuar" reposicionado para o rodapé da nova caixa
-  const hintText = cena.add.text(480, 385, "Clique para continuar ➡", {
-    fontSize: '16px', fontStyle: 'italic', color: '#FFB347'
-  }).setOrigin(0.5, 0).setDepth(102).setScrollFactor(0).setAlpha(0);
+  const hintText = cena.add
+    .text(480, 385, "Clique para continuar ➡", {
+      fontSize: "16px",
+      fontStyle: "italic",
+      color: "#FFB347",
+    })
+    .setOrigin(0.5, 0)
+    .setDepth(102)
+    .setScrollFactor(0)
+    .setAlpha(0);
 
   let voice;
   if (audioKey && cena.cache.audio.exists(audioKey)) {
@@ -1527,35 +1566,28 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
 
   // --- SEQUÊNCIAS DE IDAS E VINDAS ---
   // A boca agora começa fechada (narrador_idle), abre até o limite e volta a fechar
-  const talkSequence = isMultiFrame ? [
-    "narrador_idle",   // <-- Incluído no fluxo de talk (boca fechada)
-    "narrador_talk_1", 
-    "narrador_talk_2", 
-    "narrador_talk_3", 
-    "narrador_talk_4", 
-    "narrador_talk_3", 
-    "narrador_talk_2", 
-    "narrador_talk_1"
-  ] : [avatarKeys.idle, avatarKeys.talk || avatarKeys.idle];
+  const talkSequence = isMultiFrame
+    ? [
+        "narrador_idle", // <-- Incluído no fluxo de talk (boca fechada)
+        "narrador_talk_1",
+        "narrador_talk_2",
+        "narrador_talk_2",
+        "narrador_talk_1",
+      ]
+    : [avatarKeys.idle, avatarKeys.talk || avatarKeys.idle];
 
-  const blinkSequence = isMultiFrame ? [
-    "narrador_blink_1", 
-    "narrador_blink_2", 
-    "narrador_blink_3", 
-    "narrador_blink_4", 
-    "narrador_blink_3", 
-    "narrador_blink_2", 
-    "narrador_blink_1"
-  ] : null;
+  const blinkSequence = isMultiFrame
+    ? ["narrador_blink_1", "narrador_blink_4", "narrador_blink_1"]
+    : null;
 
   let isTalking = true;
   let talkIndex = 0;
   let isBlinking = false;
   let blinkIndex = 0;
-  let tempoAtePiscar = Phaser.Math.Between(35, 70); 
-  
+  let tempoAtePiscar = Phaser.Math.Between(35, 70);
+
   // Tratamento de segurança para o texto não quebrar o loop
-  const textoSeguro = texto || ""; 
+  const textoSeguro = texto || "";
 
   const animInterval = setInterval(() => {
     tempoAtePiscar--;
@@ -1573,7 +1605,7 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
     if (tempoAtePiscar <= 0 && blinkSequence) {
       isBlinking = true;
       blinkIndex = 0;
-      tempoAtePiscar = Phaser.Math.Between(45, 90);
+      tempoAtePiscar = Phaser.Math.Between(25, 45);
       return;
     }
 
@@ -1581,7 +1613,7 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
       avatar.setTexture(talkSequence[talkIndex]);
       talkIndex = (talkIndex + 1) % talkSequence.length;
     } else {
-      avatar.setTexture(avatarKeys.idle); 
+      avatar.setTexture(avatarKeys.idle);
     }
   }, 90);
 
@@ -1591,17 +1623,17 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
     charIndex++;
     messageText.setText(textoSeguro.slice(0, charIndex));
     playSfx(SFX.type);
-    
+
     if (charIndex >= textoSeguro.length) {
       clearInterval(typeInterval);
       isTyping = false;
       isTalking = false; // Isso para a animação da boca imediatamente
-      avatar.setTexture(avatarKeys.idle); 
+      avatar.setTexture(avatarKeys.idle);
       hintText.setAlpha(1);
     }
   }, 40);
 
-  overlay.on('pointerdown', () => {
+  overlay.on("pointerdown", () => {
     if (isTyping) {
       clearInterval(typeInterval);
       messageText.setText(textoSeguro);
@@ -1610,8 +1642,8 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
       avatar.setTexture(avatarKeys.idle);
       hintText.setAlpha(1);
     } else {
-      clearInterval(animInterval); 
-      if (voice && voice.isPlaying) voice.stop(); 
+      clearInterval(animInterval);
+      if (voice && voice.isPlaying) voice.stop();
       overlay.destroy();
       box.destroy();
       avatar.destroy();
@@ -1623,9 +1655,6 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
   });
 }
 
-// ---------------------------------------------------------
-// CENA DO MAPA DAS ILHAS (Com Animação de Desbloqueio)
-// ---------------------------------------------------------
 // ---------------------------------------------------------
 // CENA DO MAPA DAS ILHAS (Com Animação de Desbloqueio)
 // ---------------------------------------------------------
@@ -1645,24 +1674,35 @@ class MapScene extends Phaser.Scene {
     }
     // Ícone do barquinho para a animação
     if (!this.textures.exists("icon_boat")) {
-      this.load.image("icon_boat", "assets/icons/barco.png"); 
+      this.load.image("icon_boat", "assets/icons/barco.png");
     }
     // Carregamento do Narrador no Mapa
     if (!this.textures.exists("narrador_idle")) {
-      this.load.image("narrador_idle", "assets/characters/narrador_blink_1.png");
-      
-      this.load.image("narrador_talk_1", "assets/characters/narrador_talk_1.png");
-      this.load.image("narrador_talk_2", "assets/characters/narrador_talk_2.png");
-      this.load.image("narrador_talk_3", "assets/characters/narrador_talk_3.png");
-      this.load.image("narrador_talk_4", "assets/characters/narrador_talk_4.png");
+      this.load.image(
+        "narrador_idle",
+        "assets/characters/narrador_blink_1.png",
+      );
 
-      this.load.image("narrador_blink_1", "assets/characters/narrador_blink_1.png");
-      this.load.image("narrador_blink_2", "assets/characters/narrador_blink_2.png");
-      this.load.image("narrador_blink_3", "assets/characters/narrador_blink_3.png");
-      this.load.image("narrador_blink_4", "assets/characters/narrador_blink_4.png");
+      this.load.image(
+        "narrador_talk_1",
+        "assets/characters/narrador_talk_1.png",
+      );
+      this.load.image(
+        "narrador_talk_2",
+        "assets/characters/narrador_talk_2.png",
+      );
+
+      this.load.image(
+        "narrador_blink_1",
+        "assets/characters/narrador_blink_1.png",
+      );
+      this.load.image(
+        "narrador_blink_4",
+        "assets/characters/narrador_blink_4.png",
+      );
     }
     if (!this.cache.audio.exists("voz_mapa")) {
-      this.load.audio("voz_mapa", "assets/audio/voz_mapa.mp3"); 
+      this.load.audio("voz_mapa", "assets/audio/voz_mapa.mp3");
     }
   }
 
@@ -1670,7 +1710,7 @@ class MapScene extends Phaser.Scene {
     document.getElementById("hud").style.display = "none";
     document.getElementById("touch-controls").style.display = "none";
     const hud = document.getElementById("hud");
-    if (hud) hud.style.display = "none"; 
+    if (hud) hud.style.display = "none";
     const btnLeft = document.getElementById("btn-left");
     if (btnLeft) btnLeft.style.display = "none";
     const btnRight = document.getElementById("btn-right");
@@ -1680,22 +1720,56 @@ class MapScene extends Phaser.Scene {
     bg.setDisplaySize(960, 540);
 
     const islands = [
-      { id: 0, name: "FINECAP", x: 175, y: 450, arrowX: 190, arrowY: 210, iconX: 170, iconY: 365 },
-      { id: 1, name: "TRILHA DIGITAL", x: 510, y: 200, arrowX: 510, arrowY: 60, iconX: 510, iconY: 135 },
-      { id: 2, name: "ACELERADOR DIGITAL", x: 830, y: 450, arrowX: 820, arrowY: 240, iconX: 820, iconY: 400 }
+      {
+        id: 0,
+        name: "FINECAP",
+        x: 175,
+        y: 450,
+        arrowX: 190,
+        arrowY: 210,
+        iconX: 170,
+        iconY: 365,
+      },
+      {
+        id: 1,
+        name: "TRILHA DIGITAL",
+        x: 510,
+        y: 200,
+        arrowX: 510,
+        arrowY: 60,
+        iconX: 510,
+        iconY: 135,
+      },
+      {
+        id: 2,
+        name: "ACELERADOR DIGITAL",
+        x: 830,
+        y: 450,
+        arrowX: 820,
+        arrowY: 240,
+        iconX: 820,
+        iconY: 400,
+      },
     ];
 
     const pathGraphics = this.add.graphics().setDepth(1);
     pathGraphics.lineStyle(4, 0xffe27a, 0.8);
 
     for (let i = 0; i < islands.length - 1; i++) {
-      this.drawDottedLine(pathGraphics, islands[i].x, islands[i].y, islands[i + 1].x, islands[i + 1].y);
+      this.drawDottedLine(
+        pathGraphics,
+        islands[i].x,
+        islands[i].y,
+        islands[i + 1].x,
+        islands[i + 1].y,
+      );
     }
 
-    if (GameData.lastPhaseIndex === undefined) GameData.lastPhaseIndex = GameData.phaseIndex;
-    
+    if (GameData.lastPhaseIndex === undefined)
+      GameData.lastPhaseIndex = GameData.phaseIndex;
+
     const isUnlocking = GameData.lastPhaseIndex < GameData.phaseIndex;
-    let targetIslandObj = null; 
+    let targetIslandObj = null;
 
     islands.forEach((island) => {
       let status = "locked";
@@ -1705,37 +1779,91 @@ class MapScene extends Phaser.Scene {
         status = isUnlocking ? "unlocking" : "current";
       }
 
-      const zone = this.add.zone(island.x, island.y, 160, 140).setInteractive({ useHandCursor: true }).setDepth(20);
-      this.criarPlacaArredondada(island.x, island.y + 60, island.name, 0x002b54, "#F4F7F9");
+      const zone = this.add
+        .zone(island.x, island.y, 160, 140)
+        .setInteractive({ useHandCursor: true })
+        .setDepth(20);
+      this.criarPlacaArredondada(
+        island.x,
+        island.y + 60,
+        island.name,
+        0x002b54,
+        "#F4F7F9",
+      );
 
       if (status === "completed") {
-        this.add.image(island.iconX, island.iconY, "icon_check").setOrigin(0.5).setDepth(5).setScale(0.5);
-      
+        // Cria o ícone com escala 0 (invisível)
+        const check = this.add
+          .image(island.iconX, island.iconY, "icon_check")
+          .setOrigin(0.5)
+          .setDepth(5)
+          .setScale(0)
+          .setAlpha(0);
+
+        // Adiciona um tween de "Pop-up" elástico (efeito bounce)
+        this.tweens.add({
+          targets: check,
+          scale: 0.5, // Tamanho final do ícone
+          alpha: 1,
+          duration: 600,
+          ease: "Back.easeOut",
+          delay: island.id * 150, // Atraso cascata: se houver mais de um, eles aparecem um por um
+        });
       } else if (status === "locked") {
-        island.lockedImg = this.add.image(island.iconX, island.iconY, "icon_locked").setOrigin(0.5).setDepth(5).setScale(0.1);
-      
+        island.lockedImg = this.add
+          .image(island.iconX, island.iconY, "icon_locked")
+          .setOrigin(0.5)
+          .setDepth(5)
+          .setScale(0.1);
       } else if (status === "unlocking") {
-        targetIslandObj = island; 
-        
-        island.padlockImg = this.add.image(island.iconX, island.iconY, "icon_locked").setOrigin(0.5).setDepth(5).setScale(0.1);
-        
-        island.arrowText = this.add.text(island.arrowX, island.arrowY, "⬇", {
-          fontSize: "60px", color: "#FF8F00", fontStyle: "bold"
-        }).setOrigin(0.5).setDepth(10).setVisible(false);
+        targetIslandObj = island;
+
+        island.padlockImg = this.add
+          .image(island.iconX, island.iconY, "icon_locked")
+          .setOrigin(0.5)
+          .setDepth(5)
+          .setScale(0.1);
+
+        island.arrowText = this.add
+          .text(island.arrowX, island.arrowY, "⬇", {
+            fontSize: "60px",
+            color: "#FF8F00",
+            fontStyle: "bold",
+          })
+          .setOrigin(0.5)
+          .setDepth(10)
+          .setVisible(false);
 
         this.tweens.add({
-          targets: island.arrowText, y: island.arrowY + 15, duration: 600, yoyo: true, repeat: -1, ease: "Sine.easeInOut"
+          targets: island.arrowText,
+          y: island.arrowY + 15,
+          duration: 600,
+          yoyo: true,
+          repeat: -1,
+          ease: "Sine.easeInOut",
         });
-      
       } else if (status === "current") {
-        const arrow = this.add.text(island.arrowX, island.arrowY, "⬇", {
-          fontSize: "60px", color: "#FF8F00", fontStyle: "bold"
-        }).setOrigin(0.5).setDepth(10);
-        this.tweens.add({ targets: arrow, y: island.arrowY + 15, duration: 600, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+        const arrow = this.add
+          .text(island.arrowX, island.arrowY, "⬇", {
+            fontSize: "60px",
+            color: "#FF8F00",
+            fontStyle: "bold",
+          })
+          .setOrigin(0.5)
+          .setDepth(10);
+        this.tweens.add({
+          targets: arrow,
+          y: island.arrowY + 15,
+          duration: 600,
+          yoyo: true,
+          repeat: -1,
+          ease: "Sine.easeInOut",
+        });
       }
 
-      zone.on('pointerdown', () => {
-        if (isUnlocking && GameData.lastPhaseIndex < GameData.phaseIndex) return;
+      zone.on("pointerdown", () => {
+        if (isUnlocking && GameData.lastPhaseIndex < GameData.phaseIndex)
+          return;
 
         if (status === "current" || status === "unlocking") {
           playSfx(SFX.type);
@@ -1744,11 +1872,21 @@ class MapScene extends Phaser.Scene {
             this.scene.start("PhaseScene", { phaseIndex: island.id });
           });
         } else if (status === "completed") {
-          playSfx(SFX.type); 
-          this.showFeedbackMessage(island.x, island.y - 40, "✅ Fase já concluída!", '#2E7D32');
+          playSfx(SFX.type);
+          this.showFeedbackMessage(
+            island.x,
+            island.y - 40,
+            "✅ Fase já concluída!",
+            "#2E7D32",
+          );
         } else {
-          playSfx(SFX.locked); 
-          this.showFeedbackMessage(island.x, island.y - 40, "🔒 Ilha Bloqueada! Complete a anterior.", '#D32F2F');
+          playSfx(SFX.locked);
+          this.showFeedbackMessage(
+            island.x,
+            island.y - 40,
+            "🔒 Ilha Bloqueada! Complete a anterior.",
+            "#D32F2F",
+          );
 
           if (island.lockedImg && !this.tweens.isTweening(island.lockedImg)) {
             this.tweens.add({
@@ -1759,7 +1897,7 @@ class MapScene extends Phaser.Scene {
               repeat: 4,
               onComplete: () => {
                 island.lockedImg.setAngle(0);
-              }
+              },
             });
           }
         }
@@ -1768,40 +1906,48 @@ class MapScene extends Phaser.Scene {
 
     const dispararNarrador = () => {
       let textoNarrador = "";
-      if (GameData.phaseIndex === 0) textoNarrador = `Olá, ${GameData.playerName}! Seja bem-vindo à sua jornada. Clique na primeira ilha desbloqueada para iniciar!`;
-      else if (GameData.phaseIndex === 1) textoNarrador = "Muito bem! Você concluiu a primeira etapa. A Trilha Digital já está disponível para o próximo desafio.";
-      else if (GameData.phaseIndex === 2) textoNarrador = "Excelente progresso! A última etapa, Acelerador Digital, está liberada. Vamos lá!";
+      if (GameData.phaseIndex === 0)
+        textoNarrador = `Olá, ${GameData.playerName}! Me chamo Franciel Monte, vou te guiar e ajudar em toda a sua jornada. Clique na primeira ilha desbloqueada para iniciar!`;
+      else if (GameData.phaseIndex === 1)
+        textoNarrador =
+          "Muito bem! Você concluiu a primeira etapa. A Trilha Digital já está disponível para o próximo desafio.";
+      else if (GameData.phaseIndex === 2)
+        textoNarrador =
+          "Excelente progresso! A última etapa, Acelerador Digital, está liberada. Vamos lá!";
 
       if (textoNarrador !== "") {
         chamarNarrador(
-          this, 
-          { 
-            idle: "narrador_idle", 
-            talkOpen: "narrador_talk_open", 
-            talkMid: "narrador_talk_mid", 
-            blink: "narrador_blink" 
-          }, 
-          null, 
-          textoNarrador
+          this,
+          {
+            idle: "narrador_idle",
+            talkOpen: "narrador_talk_open",
+            talkMid: "narrador_talk_mid",
+            blink: "narrador_blink",
+          },
+          null,
+          textoNarrador,
         );
       }
     };
 
     if (isUnlocking && targetIslandObj) {
       const startIsland = islands[GameData.lastPhaseIndex];
-      
+
       // Barco com tamanho corrigido (setScale 0.15)
-      const barco = this.add.image(startIsland.x, startIsland.y, "icon_boat").setDepth(15).setScale(0.10);
+      const barco = this.add
+        .image(startIsland.x, startIsland.y, "icon_boat")
+        .setDepth(15)
+        .setScale(0.1);
 
       this.tweens.add({
         targets: barco,
         x: targetIslandObj.x,
         y: targetIslandObj.y,
         duration: 2500,
-        ease: 'Sine.easeInOut',
+        ease: "Sine.easeInOut",
         onComplete: () => {
-          barco.destroy(); 
-          
+          barco.destroy();
+
           if (targetIslandObj.padlockImg) {
             playSfx(SFX.unlock);
             this.tweens.add({
@@ -1821,12 +1967,12 @@ class MapScene extends Phaser.Scene {
                     targetIslandObj.arrowText.setVisible(true);
                     GameData.lastPhaseIndex = GameData.phaseIndex;
                     dispararNarrador();
-                  }
+                  },
                 });
-              }
+              },
             });
           }
-        }
+        },
       });
     } else {
       dispararNarrador();
@@ -1834,10 +1980,23 @@ class MapScene extends Phaser.Scene {
   }
 
   criarPlacaArredondada(x, y, texto, corFundo, corTexto) {
-    const label = this.add.text(x, y, texto, { fontSize: "18px", fontStyle: "bold", color: corTexto }).setOrigin(0.5).setDepth(6);
+    const label = this.add
+      .text(x, y, texto, {
+        fontSize: "18px",
+        fontStyle: "bold",
+        color: corTexto,
+      })
+      .setOrigin(0.5)
+      .setDepth(6);
     const bg = this.add.graphics().setDepth(5);
     bg.fillStyle(corFundo, 1);
-    bg.fillRoundedRect(x - label.width / 2 - 12, y - label.height / 2 - 6, label.width + 24, label.height + 12, 8);
+    bg.fillRoundedRect(
+      x - label.width / 2 - 12,
+      y - label.height / 2 - 6,
+      label.width + 24,
+      label.height + 12,
+      8,
+    );
   }
 
   drawDottedLine(graphics, x1, y1, x2, y2) {
@@ -1862,17 +2021,37 @@ class MapScene extends Phaser.Scene {
 
     const safeX = Phaser.Math.Clamp(x, 220, 740);
 
-    const msg = this.add.text(safeX, y, text, {
-      fontSize: '14px', fontStyle: 'bold', color: '#ffffff', backgroundColor: color, padding: { x: 10, y: 6 }
-    }).setOrigin(0.5).setAlpha(0).setDepth(20);
+    const msg = this.add
+      .text(safeX, y, text, {
+        fontSize: "14px",
+        fontStyle: "bold",
+        color: "#ffffff",
+        backgroundColor: color,
+        padding: { x: 10, y: 6 },
+      })
+      .setOrigin(0.5)
+      .setAlpha(0)
+      .setDepth(20);
 
     this.tweens.add({
-      targets: msg, y: y - 20, alpha: 1, duration: 300, ease: 'Power2',
+      targets: msg,
+      y: y - 20,
+      alpha: 1,
+      duration: 300,
+      ease: "Power2",
       onComplete: () => {
         this.time.delayedCall(1000, () => {
-          this.tweens.add({ targets: msg, alpha: 0, duration: 300, onComplete: () => { msg.destroy(); this.isShowingMessage = false; } });
+          this.tweens.add({
+            targets: msg,
+            alpha: 0,
+            duration: 300,
+            onComplete: () => {
+              msg.destroy();
+              this.isShowingMessage = false;
+            },
+          });
         });
-      }
+      },
     });
   }
 }
@@ -1900,9 +2079,14 @@ class PhaseScene extends Phaser.Scene {
     if (hasBoss && cfg.boss.portrait) {
       const idleKey = `boss_${cfg.id}_idle`;
       const talkKey = `boss_${cfg.id}_talk`;
+      const blinkKey = `boss_${cfg.id}_blink`;
+
       if (!this.textures.exists(idleKey)) {
         this.load.image(idleKey, `assets/bosses/${cfg.boss.portrait.idle}`);
-        this.load.image(talkKey, `assets/bosses/${cfg.boss.portrait.talk}`);
+        if (cfg.boss.portrait.talk)
+          this.load.image(talkKey, `assets/bosses/${cfg.boss.portrait.talk}`);
+        if (cfg.boss.portrait.blink)
+          this.load.image(blinkKey, `assets/bosses/${cfg.boss.portrait.blink}`);
       }
     }
 
@@ -1929,7 +2113,7 @@ class PhaseScene extends Phaser.Scene {
 
   create() {
     document.getElementById("hud").style.display = "flex";
-    document.getElementById("touch-controls").style.display = "flex"
+    document.getElementById("touch-controls").style.display = "flex";
     // Mostra o HUD e os botões de movimento ao entrar na fase
     const hud = document.getElementById("hud");
     if (hud) hud.style.display = "flex"; // ou "block", dependendo do seu CSS
@@ -2073,63 +2257,99 @@ class PhaseScene extends Phaser.Scene {
       if (cfg.boss.portrait) {
         const idleKey = `boss_${cfg.id}_idle`;
         const talkKey = `boss_${cfg.id}_talk`;
+        const blinkKey = `boss_${cfg.id}_blink`;
         const portraitHeight = cfg.boss.portraitHeight ?? 260;
         const flip = cfg.boss.portraitFlip === true;
 
         const idleTex = this.textures.get(idleKey).getSourceImage();
-        const talkTex = this.textures.get(talkKey).getSourceImage();
+        const talkTex = this.textures.exists(talkKey)
+          ? this.textures.get(talkKey).getSourceImage()
+          : idleTex;
+        const hasBlink = this.textures.exists(blinkKey);
+        const blinkTex = hasBlink
+          ? this.textures.get(blinkKey).getSourceImage()
+          : idleTex;
+
         const idleBaseScale = portraitHeight / idleTex.height;
         const talkBaseScale = portraitHeight / talkTex.height;
+        const blinkBaseScale = portraitHeight / blinkTex.height;
 
         this.bossIdleSprite = this.add
           .image(bossX, bossY, idleKey)
           .setOrigin(0.5, 1)
           .setScale(idleBaseScale)
           .setFlipX(flip);
-
         this.bossTalkSprite = this.add
           .image(bossX, bossY, talkKey)
           .setOrigin(0.5, 1)
           .setScale(talkBaseScale)
           .setFlipX(flip)
           .setVisible(false);
+        this.bossBlinkSprite = this.add
+          .image(bossX, bossY, hasBlink ? blinkKey : idleKey)
+          .setOrigin(0.5, 1)
+          .setScale(blinkBaseScale)
+          .setFlipX(flip)
+          .setVisible(false);
 
-        this.bossSprite = this.bossIdleSprite; // usado pra posicionar o balão de diálogo
+        this.bossSprite = this.bossIdleSprite;
 
-        // Respiração sutil — escala em cima da própria base (pés ficam travados no lugar)
-        this.tweens.add({
-          targets: this.bossIdleSprite,
-          scaleY: idleBaseScale * 1.02,
-          scaleX: idleBaseScale * 0.995,
-          duration: 700,
-          yoyo: true,
-          repeat: -1,
-          ease: "Sine.easeInOut",
-        });
-        this.tweens.add({
-          targets: this.bossTalkSprite,
-          scaleY: talkBaseScale * 1.02,
-          scaleX: talkBaseScale * 0.995,
-          duration: 700,
-          yoyo: true,
-          repeat: -1,
-          ease: "Sine.easeInOut",
-        });
+        // Respiração sutil para os 3 sprites
+        const addBreathingTween = (targetSprite, baseScale) => {
+          this.tweens.add({
+            targets: targetSprite,
+            scaleY: baseScale * 1.02,
+            scaleX: baseScale * 0.995,
+            duration: 700,
+            yoyo: true,
+            repeat: -1,
+            ease: "Sine.easeInOut",
+          });
+        };
+        addBreathingTween(this.bossIdleSprite, idleBaseScale);
+        addBreathingTween(this.bossTalkSprite, talkBaseScale);
+        addBreathingTween(this.bossBlinkSprite, blinkBaseScale);
 
         this.bossTalkInterval = null;
+
+        // Lógica orgânica de piscar
+        this.bossBlinkInterval = setInterval(() => {
+          // Só pisca se houver frame, não estiver pausado e não estiver falando
+          if (!hasBlink || GameData.menuPaused || this.bossTalkInterval) return;
+
+          // 30% de chance de piscar a cada ciclo para não ficar robótico
+          if (Math.random() > 0.3) return;
+
+          this.bossIdleSprite.setVisible(false);
+          this.bossBlinkSprite.setVisible(true);
+
+          setTimeout(() => {
+            // Checa novamente antes de voltar ao normal (caso tenha pausado ou começado a falar nesse meio segundo)
+            if (!this.bossTalkInterval) {
+              this.bossBlinkSprite.setVisible(false);
+              this.bossIdleSprite.setVisible(true);
+            }
+          }, 150); // Duração do olho fechado (150ms)
+        }, 2200);
+
         this.startBossTalkAnim = () => {
           if (this.bossTalkInterval) return;
+          this.bossBlinkSprite.setVisible(false); // Garante que o blink desliga ao falar
+
           this.bossTalkInterval = setInterval(() => {
+            if (GameData.menuPaused) return;
             const showTalk = !this.bossTalkSprite.visible;
             this.bossTalkSprite.setVisible(showTalk);
             this.bossIdleSprite.setVisible(!showTalk);
           }, 160);
         };
+
         this.stopBossTalkAnim = () => {
           clearInterval(this.bossTalkInterval);
           this.bossTalkInterval = null;
-          this.bossIdleSprite.setVisible(true);
           this.bossTalkSprite.setVisible(false);
+          this.bossBlinkSprite.setVisible(false);
+          this.bossIdleSprite.setVisible(true);
         };
       } else {
         this.bossSprite = this.add
@@ -2225,40 +2445,130 @@ class PhaseScene extends Phaser.Scene {
       let textoNarrador = null;
 
       if (cfg.id === "fase1") {
-        textoNarrador = "Olá, empreendedor! Seja bem-vindo à primeira etapa. Vamos aprender o básico sobre a abertura e formalização da sua empresa.";
-      } else if (cfg.id === "fase2") {
-        textoNarrador = "Excelente! Agora que sua empresa está formalizada, vamos entender um pouco mais sobre a organização financeira e as obrigações.";
-      } else if (cfg.id === "fase3") {
-        textoNarrador = "Chegamos ao desafio final! Aqui na JS Grilo vamos tratar de assuntos mais avançados e estratégicos da contabilidade.";
-      }
-
-      if (textoNarrador) {
-        // Pausa completamente o jogo para o narrador dar o recado
+        // Pausa completamente o jogo para a introdução em partes da Fase 1
         GameData.paused = true;
         this.physics.pause();
         this.inputManager.setEnabled(false);
 
+        // Parte 1: Boas-vindas
         chamarNarrador(
           this,
-          { 
-            idle: "narrador_idle", 
-            talkOpen: "narrador_talk_open", 
-            talkMid: "narrador_talk_mid", 
-            blink: "narrador_blink" 
+          {
+            idle: "narrador_idle",
+            talkOpen: "narrador_talk_open",
+            talkMid: "narrador_talk_mid",
+            blink: "narrador_blink",
           },
-          null, // Áudio opcional
-          textoNarrador,
+          null,
+          "Olá! Seja bem-vindo à fase de boas-vindas.",
           () => {
-            // Retoma a física e o controle ao fechar o balão
-            GameData.paused = false;
-            this.physics.resume();
-            this.inputManager.setEnabled(true);
-          }
+            // Parte 2: Sobre a FINECAP
+            chamarNarrador(
+              this,
+              {
+                idle: "narrador_idle",
+                talkOpen: "narrador_talk_open",
+                talkMid: "narrador_talk_mid",
+                blink: "narrador_blink",
+              },
+              null,
+              "O evento FINECAP acontece todo ano em Pau dos Ferros, reunindo negócios, cultura e inovação de toda a região.",
+              () => {
+                // Parte 3: Sobre o Sebrae
+                chamarNarrador(
+                  this,
+                  {
+                    idle: "narrador_idle",
+                    talkOpen: "narrador_talk_open",
+                    talkMid: "narrador_talk_mid",
+                    blink: "narrador_blink",
+                  },
+                  null,
+                  "E o Sebrae atua fortemente oferecendo suporte e fortalecimento para as pequenas empresas. Vamos começar!",
+                  () => {
+                    // Retoma o jogo após o fim da terceira parte da Fase 1
+                    GameData.paused = false;
+                    this.physics.resume();
+                    this.inputManager.setEnabled(true);
+                  },
+                );
+              },
+            );
+          },
         );
-      } else if (cfg.narrative?.length) {
-        startNarrative(this, cfg.narrative);
+      } else if (cfg.id === "fase2") {
+        // Pausa completamente o jogo para a introdução em 2 partes da Fase 2
+        GameData.paused = true;
+        this.physics.pause();
+        this.inputManager.setEnabled(false);
+
+        // Parte 1: Início da Trilha Digital
+        chamarNarrador(
+          this,
+          {
+            idle: "narrador_idle",
+            talkOpen: "narrador_talk_open",
+            talkMid: "narrador_talk_mid",
+            blink: "narrador_blink",
+          },
+          null,
+          "Excelente! Entramos na Trilha Digital. Agora vamos entender como funciona a organização financeira.",
+          () => {
+            // Parte 2: Conceitos
+            chamarNarrador(
+              this,
+              {
+                idle: "narrador_idle",
+                talkOpen: "narrador_talk_open",
+                talkMid: "narrador_talk_mid",
+                blink: "narrador_blink",
+              },
+              null,
+              "Aqui você vai ver conceitos essenciais como o Simples Nacional, a guia DAS e o controle de receitas e despesas!",
+              () => {
+                // Retoma o jogo após o fim da segunda parte da Fase 2
+                GameData.paused = false;
+                this.physics.resume();
+                this.inputManager.setEnabled(true);
+              },
+            );
+          },
+        );
       } else {
-        this.inputManager.setEnabled(true);
+        // Fluxo padrão para a fase 3 e futuras
+        let textoNarrador = null;
+
+        if (cfg.id === "fase3") {
+          textoNarrador =
+            "Chegamos ao desafio final! Aqui na JS Grilo vamos tratar de assuntos mais avançados e estratégicos da contabilidade.";
+        }
+
+        if (textoNarrador) {
+          GameData.paused = true;
+          this.physics.pause();
+          this.inputManager.setEnabled(false);
+
+          chamarNarrador(
+            this,
+            {
+              idle: "narrador_idle",
+              talkOpen: "narrador_talk_open",
+              talkMid: "narrador_talk_mid",
+              blink: "narrador_blink",
+            },
+            null,
+            textoNarrador,
+            () => {
+              GameData.paused = false;
+              this.physics.resume();
+              this.inputManager.setEnabled(true);
+            },
+          );
+        } else if (cfg.narrative?.length) {
+          startNarrative(this, cfg.narrative);
+        } else {
+          this.inputManager.setEnabled(true);
+        }
       }
     });
   }
@@ -2283,8 +2593,8 @@ class PhaseScene extends Phaser.Scene {
       endGame(true); // Terminou tudo
     } else {
       // NOVO: Guarda de qual fase viemos para o barco saber de onde sair no Mapa
-      GameData.lastPhaseIndex = this.phaseIndex; 
-      GameData.phaseIndex = next; 
+      GameData.lastPhaseIndex = this.phaseIndex;
+      GameData.phaseIndex = next;
       updateHUD();
       this.cameras.main.fadeOut(300, 0, 0, 0);
       this.cameras.main.once("camerafadeoutcomplete", () => {
@@ -2451,10 +2761,10 @@ document.getElementById("confirm-name-btn").addEventListener("click", () => {
   GameData.playerName = name;
   resetGameData();
   updateHUD();
-  
+
   // Exibe os controles de toque ao sair do menu inicial
   document.getElementById("touch-controls").style.display = "flex";
-  
+
   document.getElementById("start-overlay").classList.add("hidden");
   game.scene.start("MapScene");
 });
@@ -2464,7 +2774,7 @@ function setGlobalVolume(val) {
   const v = Math.max(0, Math.min(1, val));
 
   // Altera apenas o volume da música de fundo (multiplicado pelo volume base dela que é 0.2)
-  SFX.bgm.volume = v * 0.2; 
+  SFX.bgm.volume = v * 0.2;
 
   // Os efeitos sonoros (SFX.type, SFX.tick, etc.) mantêm seus valores originais fixos e intocados.
 
@@ -2476,6 +2786,11 @@ function setGlobalVolume(val) {
 const volumeBtn = document.getElementById("volume-btn");
 const volumePopup = document.getElementById("volume-popup");
 const volumeSlider = document.getElementById("volume-slider");
+
+if (volumeSlider) {
+  volumeSlider.value = "1";
+}
+setGlobalVolume(1);
 
 volumeBtn.addEventListener("click", (e) => {
   e.stopPropagation();
@@ -2502,7 +2817,7 @@ pauseBtn.addEventListener("click", () => {
   pauseModal.classList.remove("hidden");
 
   // O jeito nativo e correto de congelar o Phaser (para física, update, inputs e animações)
-  game.scene.scenes.forEach(scene => {
+  game.scene.scenes.forEach((scene) => {
     if (scene.scene.isActive()) {
       scene.scene.pause();
     }
@@ -2514,9 +2829,68 @@ document.getElementById("resume-btn").addEventListener("click", () => {
   pauseModal.classList.add("hidden");
 
   // Retoma o funcionamento do motor do Phaser
-  game.scene.scenes.forEach(scene => {
+  game.scene.scenes.forEach((scene) => {
     if (scene.scene.isPaused()) {
       scene.scene.resume();
     }
   });
 });
+
+// =========================================================
+// EVENTOS DA TELA DE GAME OVER E RANKING
+// =========================================================
+const viewRankingBtn = document.getElementById("view-ranking-btn");
+const restartBtn = document.getElementById("restart-btn");
+const closeRankingBtn = document.getElementById("close-ranking-btn");
+const rankingOverlay = document.getElementById("ranking-overlay");
+const endOverlay = document.getElementById("end-overlay");
+
+// 1. Abrir o ranking por cima da tela de Game Over
+if (viewRankingBtn) {
+  viewRankingBtn.addEventListener("click", () => {
+    rankingOverlay.classList.remove("hidden");
+    // Renderiza a lista na div específica do modal de fim de jogo
+    renderRankingInto("ranking-list-content");
+  });
+}
+
+// 2. Fechar o modal de ranking e voltar para a tela de Game Over
+if (closeRankingBtn) {
+  closeRankingBtn.addEventListener("click", () => {
+    rankingOverlay.classList.add("hidden");
+  });
+}
+
+// 3. Reiniciar a partida
+if (restartBtn) {
+  restartBtn.addEventListener("click", () => {
+    endOverlay.classList.add("hidden");
+    rankingOverlay.classList.add("hidden");
+    document.getElementById("boss-overlay").classList.add("hidden");
+    document.getElementById("info-bubble").classList.add("info-bubble-hidden");
+
+    stopSfx(SFX.bgm);
+
+    resetGameData();
+
+    document.getElementById("hud").style.display = "none";
+    document.getElementById("touch-controls").style.display = "none";
+
+    game.scene.scenes.forEach((scene) => {
+      if (scene.input && scene.input.keyboard) {
+        scene.input.keyboard.clearCaptures();
+      }
+    });
+    game.scene.stop("PhaseScene");
+    game.scene.stop("MapScene");
+
+    document.getElementById("start-overlay").classList.remove("hidden");
+    showPanel("panel-menu");
+
+    const nameInput = document.getElementById("player-name-start");
+    if (nameInput) nameInput.value = "";
+
+    const nameWarning = document.getElementById("name-warning");
+    if (nameWarning) nameWarning.classList.add("hidden");
+  });
+}

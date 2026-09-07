@@ -20,7 +20,7 @@
             class="top-control-btn"
             title="Ajustar Volume"
           >
-            🔊 <span id="volume-label">20%</span>
+            🔊 <span id="volume-label">100%</span>
           </button>
           <div id="volume-popup" class="hidden">
             <input
@@ -39,11 +39,11 @@
       </div>
       <div id="game-container"></div>
       <div id="pause-modal" class="hidden">
-  <div class="modal-content">
-    <h2>Jogo Pausado</h2>
-    <button id="resume-btn" class="menu-btn">Continuar</button>
-  </div>
-</div>
+        <div class="modal-content">
+          <h2>Jogo Pausado</h2>
+          <button id="resume-btn" class="menu-btn">Continuar</button>
+        </div>
+      </div>
 
       <div id="touch-controls">
         <button
@@ -72,20 +72,20 @@
               alt="Personagem"
             />
 
-            <div id="hud-lives">❤️❤️❤️❤️❤️❤️</div>
+            <div id="hud-lives"></div>
           </div>
 
           <div class="hud-card-row">🪙 <span id="score-value">0</span></div>
 
           <div class="hud-card-row hud-phase-info">
-            <span id="phase-label">Fase 1</span>
-            <strong id="phase-name">Abrindo sua Empresa</strong>
+            <span id="phase-label"></span>
+            <strong id="phase-name"></strong>
           </div>
 
           <div class="hud-card-row hud-small">
             📖
             <span id="hud-murais-count">0</span>/
-            <span id="hud-murais-total">3</span>
+            <span id="hud-murais-total">0</span>
           </div>
           <div class="hud-card-row hud-small" id="hud-objective"></div>
         </div>
@@ -93,8 +93,8 @@
 
       <!-- Apresentação do título da fase -->
       <div id="phase-intro" class="hidden">
-        <span id="phase-intro-label">Fase 1</span>
-        <strong id="phase-intro-name"> Abrindo sua Empresa </strong>
+        <span id="phase-intro-label"></span>
+        <strong id="phase-intro-name"></strong>
       </div>
 
       <!-- Caixa de informação -->
@@ -105,13 +105,13 @@
       <!-- Overlay de batalha do boss (PAUSA o jogo) -->
       <div id="boss-overlay" class="hidden">
         <div id="boss-dialogue" class="boss-dialogue">
-          <div class="boss-name-tag" id="boss-name">BOSS</div>
-          <p id="question-text" class="question-bubble">Pergunta?</p>
+          <div class="boss-name-tag" id="boss-name"></div>
+          <p id="question-text" class="question-bubble"></p>
         </div>
 
         <div id="boss-answers-panel" class="boss-answers-panel hidden">
-          <!-- Relógio agora fica no topo do painel de alternativas -->
-          <div class="timer-badge" id="dialogue-header">⏱ 15s</div>
+          <!-- Relógio no topo do painel de alternativas -->
+          <div class="timer-badge" id="dialogue-header"></div>
           <div id="question-options"></div>
         </div>
       </div>
@@ -119,7 +119,7 @@
       <!-- Tela final (vitória ou derrota) -->
       <div id="end-overlay" class="hidden">
         <div class="end-panel">
-          <h2 id="end-title">Fim de Jogo</h2>
+          <h2 id="end-title"></h2>
           <p id="end-message"></p>
           <div id="end-score"></div>
           <div id="end-buttons">

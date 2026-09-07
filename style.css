@@ -1,19 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
 /* =========================================================
-   IDENTIDADE VISUAL — PALETA CENTRALIZADA
-   Troque estes valores pelas cores oficiais da marca (logo/site).
-   Os mesmos hex também existem em game.js -> THEME (mantenha os dois em sincronia).
+   1. IDENTIDADE VISUAL — PALETA CENTRALIZADA
+   (Mantenha sincronizado com THEME em game.js)
    ========================================================= */
 :root {
-  --color-primary: #005DAA; 
-  --color-primary-dark: #002B54; 
-  --color-accent: #ffffff; 
-  --color-accent-light: #bfbfcc; 
-  --color-cream: #F4F7F9; 
-  --color-danger: #D32F2F;
-  --color-success: #2E7D32;
-  --color-text: #F4F7F9;
+  --color-primary: #005daa;
+  --color-primary-dark: #002b54;
+  --color-accent: #ffffff;
+  --color-accent-light: #bfbfcc;
+  --color-cream: #f4f7f9;
+  --color-danger: #d32f2f;
+  --color-success: #2e7d32;
+  --color-text: #f4f7f9;
 }
 
 * {
@@ -28,19 +27,34 @@ body {
   height: 100%;
   overflow: hidden;
   background: var(--color-primary-dark);
-  touch-action: manipulation; /* evita zoom por duplo-toque */
-  -webkit-user-select: none;
-  user-select: none; /* impede selecionar texto sem querer */
-  -webkit-touch-callout: none; /* impede menu de "salvar imagem" ao segurar o dedo */
-}
-
-body {
   font-family: "Press Start 2P", monospace;
   color: var(--color-text);
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
+button {
+  font-family: "Press Start 2P", monospace;
+  font-size: 11px;
+  background: var(--color-accent);
+  color: #16213e;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 18px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--color-accent-light);
+}
+
+/* =========================================================
+   2. CANVAS & ENQUADRAMENTO GERAL DO JOGO
+   ========================================================= */
 #game-wrapper {
-  position: fixed; /* era "absolute" */
+  position: fixed;
   top: 50%;
   left: 50%;
   width: 960px;
@@ -54,36 +68,91 @@ body {
   image-rendering: pixelated;
 }
 
-/* ---------- HUD ---------- */
+/* =========================================================
+   3. CONTROLES DO TOPO (VOLUME E PAUSE)
+   ========================================================= */
+#game-top-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 25;
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
 
-.hud-phase-info {
+.top-control-btn {
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  background: rgba(11, 21, 38, 0.85);
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s ease;
+}
+
+.top-control-btn:hover {
+  background: rgba(242, 169, 0, 0.2);
+}
+
+.volume-container {
+  position: relative;
+}
+
+#volume-popup {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  background: rgba(11, 21, 38, 0.95);
+  border: 2px solid var(--color-accent);
+  padding: 8px;
+  border-radius: 6px;
+  z-index: 30;
+}
+
+#volume-slider {
+  width: 90px;
+  cursor: pointer;
+}
+
+#pause-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 21, 38, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: auto !important;
+}
+
+.modal-content {
+  background: var(--color-primary);
+  border: 4px solid var(--color-accent);
+  padding: 24px;
+  border-radius: 10px;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-top: 8px;
-  padding-top: 7px;
-  border-top: 1px solid rgba(242, 169, 0, 0.35);
+  gap: 14px;
+  max-width: 320px;
+  width: 100%;
 }
 
-#phase-label {
-  color: var(--color-accent-light);
-  font-size: 7px;
-  opacity: 0.85;
-}
-
-#phase-name {
-  color: var(--color-accent);
-  font-size: 8px;
-  line-height: 1.5;
-  max-width: 210px;
-}
-
+/* =========================================================
+   4. INTERFACE DURANTE O JOGO (HUD & TOUCH)
+   ========================================================= */
 #hud {
   position: absolute;
   top: 12px;
   left: 12px;
   right: 12px;
-  display: none; /* <--- Altere de display: none !important para display: none simples para o JS poder controlar */
+  display: none;
   justify-content: space-between;
   align-items: flex-start;
   z-index: 5;
@@ -128,35 +197,85 @@ body {
   color: var(--color-accent);
 }
 
+.hud-phase-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(242, 169, 0, 0.35);
+}
+
+#phase-label {
+  color: var(--color-accent-light);
+  font-size: 7px;
+  opacity: 0.85;
+}
+
+#phase-name {
+  color: var(--color-accent);
+  font-size: 8px;
+  line-height: 1.5;
+  max-width: 210px;
+}
+
 .hud-small {
   font-size: 8px;
   opacity: 0.85;
 }
 
-/* ---------- Apresentação da fase ---------- */
+#touch-controls {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  display: none;
+  gap: 16px;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.touch-btn {
+  pointer-events: auto;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(11, 21, 38, 0.75);
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent-light);
+  font-size: 28px;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-btn:active {
+  background: rgba(242, 169, 0, 0.35);
+}
+
+/* =========================================================
+   5. INTERAÇÕES DE CENÁRIO (INTRO DA FASE & MURAIS)
+   ========================================================= */
 #phase-intro {
   position: absolute;
   left: 50%;
   top: 72px;
   transform: translateX(-50%);
-
   min-width: 340px;
   max-width: 600px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-
   background: rgba(11, 21, 38, 0.92);
   border: 3px solid var(--color-accent);
   border-radius: 10px;
   padding: 14px 24px;
-
   text-align: center;
   pointer-events: none;
   z-index: 15;
-
   box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.35);
 }
 
@@ -180,51 +299,34 @@ body {
     opacity: 0;
     transform: translate(-50%, -12px);
   }
-
-  15% {
+  15%, 75% {
     opacity: 1;
     transform: translate(-50%, 0);
   }
-
-  75% {
-    opacity: 1;
-    transform: translate(-50%, 0);
-  }
-
   100% {
     opacity: 0;
     transform: translate(-50%, -10px);
   }
 }
 
-/* ---------- Balão de informação (mural/quadro) ---------- */
-/* Animação de abertura do balão de informações */
 #info-bubble {
   position: absolute;
-
-  /* A posição será definida pelo JavaScript */
   left: 0;
   top: 0;
-
   width: 310px;
   max-width: 310px;
-
   background: var(--color-cream);
   color: #1a1a1a;
   border: 4px solid var(--color-primary);
   border-radius: 10px;
   padding: 12px 14px;
-
   font-size: 10px;
   line-height: 1.6;
-
   box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
   z-index: 10;
-
   opacity: 1;
   transform: translate(-50%, -100%) scale(1);
   transform-origin: bottom center;
-
   transition:
     opacity 0.15s ease,
     transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -236,25 +338,17 @@ body {
   bottom: -14px;
   left: 50%;
   transform: translateX(-50%);
-
   border-width: 14px 9px 0;
   border-style: solid;
   border-color: var(--color-primary) transparent transparent transparent;
 }
 
-/* Estado fechado */
 #info-bubble.info-bubble-hidden {
   opacity: 0;
   pointer-events: none;
-
-  /*
-   * Começa pequeno exatamente perto da cabeça do NPC,
-   * parecendo que o ícone está se expandindo.
-   */
   transform: translate(-50%, -100%) scale(0.15);
 }
 
-/* Pequeno estouro ao abrir */
 #info-bubble.info-bubble-opening {
   animation: infoBubbleOpen 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -264,59 +358,28 @@ body {
     opacity: 0;
     transform: translate(-50%, -100%) scale(0.15);
   }
-
   70% {
     opacity: 1;
     transform: translate(-50%, -100%) scale(1.06);
   }
-
   100% {
     opacity: 1;
     transform: translate(-50%, -100%) scale(1);
   }
 }
 
-/* ---------- Overlays genéricos ---------- */
-.hidden {
-  display: none !important;
-}
-
-#end-overlay,
-#start-overlay,
-#ranking-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(11, 21, 38, 0.92);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
-  padding: 20px;
-}
-
-.end-panel,
-.ranking-panel {
-  background: var(--color-primary);
-  border: 4px solid var(--color-accent);
-  border-radius: 10px;
-  padding: 28px;
-  max-width: 560px;
-  width: 100%;
-  text-align: center;
-}
-
-/* ---------- Batalha do boss: balão flutuante ancorado na posição real do boss em tela ---------- */
+/* =========================================================
+   6. BATALHA DO BOSS (DIÁLOGO, TIMER & PERGUNTAS)
+   ========================================================= */
 #boss-overlay {
   position: absolute;
   inset: 0;
   z-index: 20;
   pointer-events: none;
-  /* deixa o cenário visível; só o balão captura clique */
 }
 
 .boss-dialogue {
   position: absolute;
-  /* left/bottom calculados via JS pra acompanhar a posição do boss */
   pointer-events: auto;
   transform: translateX(-50%);
   display: flex;
@@ -325,7 +388,6 @@ body {
   gap: 10px;
   width: 340px;
   margin-bottom: 22px;
-  /* mais respiro entre o balão e a cabeça do boss */
 }
 
 .boss-name-tag {
@@ -338,25 +400,35 @@ body {
   white-space: nowrap;
 }
 
-.dialogue-badge {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: var(--color-primary);
-  border: 2px solid var(--color-accent);
-  color: var(--color-accent);
-  font-size: 8px;
-  padding: 5px 8px;
-  border-radius: 12px;
-  white-space: nowrap;
-  z-index: 20;
+#question-text.question-bubble {
+  background: var(--color-cream);
+  color: #1a1a1a;
+  border-radius: 10px;
+  padding: 14px 16px;
+  position: relative;
+  margin: 0;
+  width: 100%;
+  font-size: 11px;
+  line-height: 1.6;
+  cursor: pointer;
+  min-height: 20px;
 }
 
-/* ---------- Painel de respostas: fixo do lado esquerdo da tela ---------- */
+#question-text.question-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 14px 9px 0 9px;
+  border-style: solid;
+  border-color: var(--color-cream) transparent transparent transparent;
+}
+
 .boss-answers-panel {
   position: absolute;
   left: 24px;
-  top: 60%; /* <--- Alterado de 50% para 60% para descer o painel */
+  top: 60%;
   transform: translateY(-50%);
   pointer-events: auto;
   width: 260px;
@@ -371,34 +443,16 @@ body {
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.35);
 }
 
-.boss-answers-panel.hidden {
-  display: none !important;
-}
-
-#question-text.question-bubble {
-  background: var(--color-cream);
-  color: #1a1a1a;
-  border-radius: 10px;
-  padding: 14px 16px;
-  position: relative;
-  margin: 0;
+.timer-badge {
+  background: var(--color-primary-dark);
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent);
+  font-size: 10px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 8px;
   width: 100%;
-  font-size: 11px;
-  line-height: 1.6;
-  cursor: pointer;
-  /* clicar no balão pula a digitação do texto */
-  min-height: 20px;
-}
-
-#question-text.question-bubble::after {
-  content: "";
-  position: absolute;
-  bottom: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 14px 9px 0 9px;
-  border-style: solid;
-  border-color: var(--color-cream) transparent transparent transparent;
 }
 
 #question-options {
@@ -435,72 +489,18 @@ body {
   border-color: #e57373;
 }
 
-#end-title {
-  font-size: 20px;
-  color: var(--color-accent);
-  margin-bottom: 14px;
-}
-
-#end-message {
-  font-size: 12px;
-  line-height: 1.7;
-  margin-bottom: 14px;
-}
-
-#end-score {
-  font-size: 12px;
-  margin-bottom: 18px;
-  line-height: 2.1;
-  text-align: left;
-}
-
-#end-buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-button {
-  font-family: "Press Start 2P", monospace;
-  font-size: 11px;
-  background: var(--color-accent);
-  color: #16213e;
-  border: none;
-  border-radius: 6px;
-  padding: 12px 18px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: var(--color-accent-light);
-}
-
-.secondary-btn {
-  background: transparent;
-  color: var(--color-accent);
-  border: 2px solid var(--color-accent);
-}
-
-.secondary-btn:hover {
-  background: rgba(242, 169, 0, 0.15);
-}
-
-#ranking-list-content {
-  text-align: left;
-  font-size: 10px;
-  line-height: 2.1;
-  margin-bottom: 18px;
-}
-
-#ranking-list-content ol {
-  padding-left: 20px;
-  margin: 0;
-}
-
-/* ---------- Menu inicial estilo "console" (Jogar / Ranking / Regras / Sobre / Criador) ---------- */
+/* =========================================================
+   7. MENU INICIAL (TELAS, SELEÇÃO & NAVEGAÇÃO)
+   ========================================================= */
 #start-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 21, 38, 0.92);
+  display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 20px;
   overflow-y: auto;
 }
 
@@ -597,6 +597,42 @@ button:hover {
   text-align: left;
 }
 
+.character-grid {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.character-option {
+  background: var(--color-primary-dark);
+  border: 3px solid #3a4a70;
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.character-option img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  object-position: top;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.character-option:hover {
+  transform: translateY(-2px);
+}
+
+.character-option.selected {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
 #player-name-start {
   font-family: "Press Start 2P", monospace;
   font-size: 11px;
@@ -634,41 +670,60 @@ button:hover {
   background: rgba(242, 169, 0, 0.15);
 }
 
-/* ---------- Seleção de personagem ---------- */
-.character-grid {
+.link a {
+  color: white;
+}
+
+/* =========================================================
+   8. MODAIS FINAIS (GAME OVER, VITÓRIA & RANKING)
+   ========================================================= */
+#end-overlay,
+#ranking-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(11, 21, 38, 0.92);
   display: flex;
-  gap: 14px;
-  margin-bottom: 24px;
+  align-items: center;
   justify-content: center;
+  z-index: 20;
+  padding: 20px;
 }
 
-.character-option {
-  background: var(--color-primary-dark);
-  border: 3px solid #3a4a70;
+.end-panel,
+.ranking-panel {
+  background: var(--color-primary);
+  border: 4px solid var(--color-accent);
   border-radius: 10px;
-  padding: 8px;
-  cursor: pointer;
-  transition:
-    border-color 0.15s,
-    transform 0.15s;
+  padding: 28px;
+  max-width: 560px;
+  width: 100%;
+  text-align: center;
 }
 
-.character-option img {
-  width: 64px;
-  height: 64px;
-  object-fit: cover;
-  object-position: top;
-  image-rendering: pixelated;
-  display: block;
+#end-title {
+  font-size: 20px;
+  color: var(--color-accent);
+  margin-bottom: 14px;
 }
 
-.character-option:hover {
-  transform: translateY(-2px);
+#end-message {
+  font-size: 12px;
+  line-height: 1.7;
+  margin-bottom: 14px;
 }
 
-.character-option.selected {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 2px var(--color-accent);
+#end-score {
+  font-size: 12px;
+  margin-bottom: 18px;
+  line-height: 2.1;
+  text-align: left;
+}
+
+#end-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 #ranking-list-menu,
@@ -676,7 +731,7 @@ button:hover {
   text-align: left;
   font-size: 10px;
   line-height: 2.1;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
 }
 
 #ranking-list-menu ol,
@@ -685,134 +740,9 @@ button:hover {
   margin: 0;
 }
 
-#touch-controls {
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
-  display: none; /* <--- Mesma coisa aqui */
-  gap: 16px;
-  z-index: 6;
-  pointer-events: none;
-}
-
-.touch-btn {
-  pointer-events: auto;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: rgba(11, 21, 38, 0.75);
-  border: 2px solid var(--color-accent);
-  color: var(--color-accent-light);
-  font-size: 28px;
-  font-family: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.touch-btn:active {
-  background: rgba(242, 169, 0, 0.35);
-}
-
-.link a {
-  color: white;
-}
-
-
-#game-top-controls {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 25;
-  display: flex;
-  gap: 8px;
-  pointer-events: auto;
-}
-
-.top-control-btn {
-  font-family: "Press Start 2P", monospace;
-  font-size: 8px;
-  background: rgba(11, 21, 38, 0.85);
-  color: var(--color-accent);
-  border: 2px solid var(--color-accent);
-  padding: 8px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: background 0.15s ease;
-}
-
-.top-control-btn:hover {
-  background: rgba(242, 169, 0, 0.2);
-}
-
-/* ---------- Volume Pop-up ---------- */
-.volume-container {
-  position: relative;
-}
-
-#volume-popup {
-  position: absolute;
-  top: 38px;
-  right: 0;
-  background: rgba(11, 21, 38, 0.95);
-  border: 2px solid var(--color-accent);
-  padding: 8px;
-  border-radius: 6px;
-  z-index: 30;
-}
-
-#volume-popup.hidden {
+/* =========================================================
+   9. UTILITÁRIOS GERAIS
+   ========================================================= */
+.hidden {
   display: none !important;
-}
-
-#volume-slider {
-  width: 90px;
-  cursor: pointer;
-}
-
-/* ---------- Pause Modal ---------- */
-#pause-modal {
-  position: absolute;
-  inset: 0;
-  background: rgba(11, 21, 38, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999; /* Força ficar acima de qualquer botão touch ou painel de boss */
-  pointer-events: auto !important; /* Bloqueia rigorosamente os cliques vazados */
-}
-
-#pause-modal.hidden {
-  display: none !important;
-}
-
-.modal-content {
-  background: var(--color-primary);
-  border: 4px solid var(--color-accent);
-  padding: 24px;
-  border-radius: 10px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  max-width: 320px;
-  width: 100%;
-}
-
-/* ---------- Estilo do Relógio dentro do painel ---------- */
-.timer-badge {
-  background: var(--color-primary-dark);
-  border: 2px solid var(--color-accent);
-  color: var(--color-accent);
-  font-size: 10px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  text-align: center;
-  margin-bottom: 8px;
-  width: 100%;
 }
