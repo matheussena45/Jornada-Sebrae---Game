@@ -353,7 +353,7 @@ const PHASES = [
       portraitHeight: 200,
       dialogueBottom: 240,
       greeting:
-        "Seja bem-vindo à Trilha Digital! Vamos avaliar se sua empresa está realmente preparada para atrair, atender e vender na internet.",
+        "Olá, eu sou Gilmara da Mata, Trainee do Sebrae! Seja bem-vindo à Trilha Digital! Vamos avaliar se sua empresa está realmente preparada para atrair, atender e vender na internet.",
       introLines: [
         "Primeiro desafio sobre presença digital:",
         "Muito bem. Vamos elevar o nível na próxima:",
@@ -533,12 +533,12 @@ const PHASES = [
       {
         x: 180,
         y: 320,
-        text: "Impulsionar botão rápido não é campanha: no gerenciador de anúncios profissional você define o público-alvo exato e mede conversões reais.",
+        text: "Antes de impulsionar sua empresa no digital, compreenda melhor sobre o público que você quer alcançar e a mensagem que quer entregar. Vender vai além de alcançar o cliente.",
       },
       {
         x: 850,
         y: 240,
-        text: "Muitos cliques sem compras? Avalie o pós-clique: site lento, oferta confusa ou demora no WhatsApp derrubam qualquer investimento.",
+        text: "Fique atento a forma como você posiciona sua empresa no digital. Ter uma estratégia de marketing é fundamental para converter os cliques em vendas.",
       },
       {
         x: 1180,
@@ -556,7 +556,7 @@ const PHASES = [
       portraitHeight: 210,
       dialogueBottom: 275,
       greeting:
-        "Parabéns por chegar ao Acelerador Digital! Vamos analisar sua capacidade de tomar decisões com base em dados, funil de vendas e retorno financeiro.",
+        "Olá, eu sou Renato Gouveia! Parabéns por chegar ao Acelerador Digital! Vamos analisar sua capacidade de tomar decisões com base em dados, funil de vendas e retorno financeiro.",
         merchanText:
         "Quer dominar o marketing e transformar seguidores em clientes reais? Não perca tempo: conheça a solução Acelerador Digital do Sebrae!",
       qrCode: {
@@ -1957,7 +1957,7 @@ class MapScene extends Phaser.Scene {
     const dispararNarrador = () => {
       let textoNarrador = "";
       if (GameData.phaseIndex === 0)
-        textoNarrador = `Olá, ${GameData.playerName}! Me chamo Franciel Monte, vou te guiar e ajudar em toda a sua jornada. Clique na primeira ilha desbloqueada para iniciar!`;
+        textoNarrador = `Olá, ${GameData.playerName}! Me chamo Lúcia Pereira, vou te guiar e ajudar em toda a sua jornada. Clique na primeira ilha desbloqueada para iniciar!`;
       else if (GameData.phaseIndex === 1)
         textoNarrador =
           "Muito bem! Você concluiu a primeira etapa. A Trilha Digital já está disponível para o próximo desafio.";
@@ -2574,7 +2574,7 @@ class PhaseScene extends Phaser.Scene {
                 blink: "narrador_blink",
               },
               null,
-              "Fique atento aos murais: vamos entender como ser achado no Google, como atender no WhatsApp de verdade e como usar a IA a seu favor!",
+              "Fique atento aos murais: vamos entender como ser achado no Google, Como utilizar o WhatsApp para Negócios e como usar a IA a seu favor!",
               () => {
                 // Retoma o jogo após o fim da segunda parte da Fase 2
                 GameData.paused = false;
@@ -2590,7 +2590,7 @@ class PhaseScene extends Phaser.Scene {
 
         if (cfg.id === "fase3") {
           textoNarrador =
-            "Chegamos ao desafio final: o Acelerador Digital! Aqui você colocará à prova suas decisões sobre tráfego pago, análise de funil e retorno financeiro real.";
+            "Chegamos ao desafio final: Aqui você colocará a prova seus conhecimentos sobre tráfego pago, Inteligência Artificial e WhatsApp para Negócios.";
         } 
 
         if (textoNarrador) {
