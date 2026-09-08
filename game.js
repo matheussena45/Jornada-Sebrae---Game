@@ -1063,7 +1063,7 @@ function endGame(won) {
       ? "🏆 Parabéns!"
       : "Game Over";
     document.getElementById("end-message").textContent = won
-      ? "Você completou as quatro fases e agora conhece melhor os desafios da gestão empresarial!"
+      ? "Você completou as três fases e está pronto para a Inovação Digital!"
       : "Você ficou sem vidas no meio da jornada. Que tal tentar de novo?";
 
     document.getElementById("end-score").innerHTML = `
