@@ -299,7 +299,8 @@ button:hover {
     opacity: 0;
     transform: translate(-50%, -12px);
   }
-  15%, 75% {
+  15%,
+  75% {
     opacity: 1;
     transform: translate(-50%, 0);
   }
@@ -808,4 +809,3 @@ button:hover {
 .hidden {
   display: none !important;
 }
-

@@ -41,6 +41,8 @@ const SFX = {
   locked: new Audio("assets/audio/locked.mp3"),
   unlock: new Audio("assets/audio/unlock.mp3"),
   complete: new Audio("assets/audio/completed.wav"),
+  victory: new Audio("assets/audio/victory.mp3"),
+  gameover: new Audio("assets/audio/gameover.mp3"),
 };
 SFX.bgm.loop = true;
 SFX.bgm.volume = 0.2;
@@ -50,6 +52,8 @@ SFX.tick.loop = false;
 SFX.locked.volume = 0.6;
 SFX.unlock.volume = 0.8;
 SFX.complete.volume = 0.8;
+SFX.victory.volume = 0.8;
+SFX.gameover.volume = 0.8;
 
 function playSfx(audio) {
   try {
@@ -125,13 +129,13 @@ function resetGameData() {
 const PHASES = [
   {
     id: "fase1",
-    name: "Boas Vindas",
+    name: "Conhecendo os Parceiros",
     startX: 80,
     startDirection: "right",
     hasBoss: true,
     exitInitiallyOpen: false,
     phaseNumber: 1,
-    phaseLabel: "Fase Boas Vindas",
+    phaseLabel: "Introdução",
     skyColor: 0x18233d,
     groundColor: 0x2c3350,
     decorColor: 0x22304f,
@@ -353,7 +357,7 @@ const PHASES = [
       portraitHeight: 200,
       dialogueBottom: 240,
       greeting:
-        "Olá, eu sou Gilmara da Mata, Trainee do Sebrae! Seja bem-vindo à Trilha Digital! Vamos avaliar se sua empresa está realmente preparada para atrair, atender e vender na internet.",
+        "Olá, eu sou Gilmara, Trainee do Sebrae! Seja bem-vindo à Trilha Digital! Vamos avaliar se sua empresa está realmente preparada para atrair, atender e vender na internet.",
       introLines: [
         "Primeiro desafio sobre presença digital:",
         "Muito bem. Vamos elevar o nível na próxima:",
@@ -517,7 +521,7 @@ const PHASES = [
     hasBoss: true,
     exitInitiallyOpen: false,
     phaseNumber: 3,
-    phaseLabel: "Fase 3",
+    phaseLabel: "Fase 2",
     skyColor: 0x18233d,
     groundColor: 0x2c3350,
     decorColor: 0x22304f,
@@ -553,11 +557,11 @@ const PHASES = [
         talk: "boss3_talk.png",
         blink: "boss3_blink.png",
       },
-      portraitHeight: 210,
-      dialogueBottom: 275,
+      portraitHeight: 240,
+      dialogueBottom: 290,
       greeting:
         "Olá, eu sou Renato Gouveia! Parabéns por chegar ao Acelerador Digital! Vamos analisar sua capacidade de tomar decisões com base em dados, funil de vendas e retorno financeiro.",
-        merchanText:
+      merchanText:
         "Quer dominar o marketing e transformar seguidores em clientes reais? Não perca tempo: conheça a solução Acelerador Digital do Sebrae!",
       qrCode: {
         image: "assets/images/qrcode_acelerador.png",
@@ -1018,21 +1022,48 @@ function buildAllTextures(scene) {
 // ---------------------------------------------------------
 // TELA DE FIM DE JOGO (vitória ou derrota) — pontuação salva automaticamente
 // ---------------------------------------------------------
+// ---------------------------------------------------------
+// TELA DE FIM DE JOGO
+// ---------------------------------------------------------
+// ---------------------------------------------------------
+// TELA DE FIM DE JOGO
+// ---------------------------------------------------------
 function endGame(won) {
-  if (GameData.hasEnded) return; 
+  if (GameData.hasEnded) return;
   GameData.hasEnded = true;
 
+  // Apenas silencia a música de fundo imediatamente
+  stopSfx(SFX.bgm);
+
   const elapsedSeconds = Math.floor((Date.now() - GameData.startTime) / 1000);
-  const finalScore = computeFinalScore(elapsedSeconds);
+  const finalScore = computeFinalScore();
 
   saveRankingEntry(GameData.playerName, finalScore, elapsedSeconds);
 
-  // Lógica isolada para exibir a tela de pontuação
+  // Esta função só será chamada DEPOIS do QR Code (se houver)
   const showGameOverScreen = () => {
+    // ÁUDIOS E EFEITOS AGORA DISPARAM AQUI
+    if (won) {
+      playSfx(SFX.victory);
+      if (typeof confetti === "function") {
+        confetti({
+          particleCount: 250,
+          spread: 120,
+          origin: { y: 0.5 },
+          zIndex: 99999,
+        });
+      }
+    } else {
+      playSfx(SFX.gameover); // O som triste só toca quando essa tela aparecer!
+    }
+
+    // Mostra a interface
     document.getElementById("end-overlay").classList.remove("hidden");
-    document.getElementById("end-title").textContent = won ? "🏆 Parabéns!" : "Game Over";
+    document.getElementById("end-title").textContent = won
+      ? "🏆 Parabéns!"
+      : "Game Over";
     document.getElementById("end-message").textContent = won
-      ? "Você completou as três fases e agora conhece melhor os desafios da gestão empresarial!"
+      ? "Você completou as quatro fases e agora conhece melhor os desafios da gestão empresarial!"
       : "Você ficou sem vidas no meio da jornada. Que tal tentar de novo?";
 
     document.getElementById("end-score").innerHTML = `
@@ -1045,19 +1076,21 @@ function endGame(won) {
     `;
   };
 
-  // Se perdeu o jogo, mostra o modal do QR Code primeiro
+  // Lógica de exibição: Se perdeu, exibe o QR Code primeiro e CHAMA a tela (com o som) depois.
   if (!won) {
-    showQRCodeModal({
-      image: "assets/images/qrcode_acelerador.png",
-      duration: 30, // Tempo de tela para o Game Over
-      title: "Não desista do seu negócio!",
-      text: "Quer dominar o marketing e transformar seguidores em clientes reais? Aponte a câmera e conheça o Acelerador Digital do Sebrae antes de jogar novamente:"
-    }, () => {
-      // Assim que o timer acabar (ou o jogador fechar), mostra o Game Over normal
-      showGameOverScreen();
-    });
+    showQRCodeModal(
+      {
+        image: "assets/images/qrcode_acelerador.png",
+        duration: 30,
+        title: "Não desista do seu negócio!",
+        text: "Quer dominar o marketing e transformar seguidores em clientes reais? Aponte a câmera e conheça o Acelerador Digital do Sebrae antes de jogar novamente:",
+      },
+      () => {
+        showGameOverScreen();
+      },
+    );
   } else {
-    // Se ganhou, o boss final já mostrou o QR Code, então vai direto pra tela de vitória
+    // Se ganhou, o QR code já passou lá no diálogo do boss, então vai direto pra tela final
     showGameOverScreen();
   }
 }
@@ -1426,11 +1459,15 @@ function positionInfoBubble(scene, spot) {
   let screenX = spot.x - camera.scrollX;
   let screenY = (spot.y ?? 300) - camera.scrollY;
 
-  const halfBubbleWidth = 165;
-
+  // Ajustado para a nova largura do balão (metade de 380 = 190)
+  const halfBubbleWidth = 190;
   screenX = Phaser.Math.Clamp(screenX, halfBubbleWidth, 960 - halfBubbleWidth);
 
-  screenY = Math.max(screenY, 115);
+  // NOVO: Pega a altura real do balão e garante que ele nunca ultrapasse o teto da tela
+  const bubbleHeight = bubble.offsetHeight || 160;
+  const minSafeY = bubbleHeight + 20; // 20px de "respiro" no topo
+
+  screenY = Math.max(screenY, minSafeY);
 
   bubble.style.left = `${screenX}px`;
   bubble.style.top = `${screenY - 8}px`;
@@ -1611,7 +1648,6 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
   // A boca agora começa fechada (narrador_idle), abre até o limite e volta a fechar
   const talkSequence = isMultiFrame
     ? [
-        "narrador_idle", // <-- Incluído no fluxo de talk (boca fechada)
         "narrador_talk_1",
         "narrador_talk_2",
         "narrador_talk_2",
@@ -1627,7 +1663,7 @@ function chamarNarrador(cena, avatarKeys, audioKey, texto, onComplete) {
   let talkIndex = 0;
   let isBlinking = false;
   let blinkIndex = 0;
-  let tempoAtePiscar = Phaser.Math.Between(35, 70);
+  let tempoAtePiscar = Phaser.Math.Between(60, 70);
 
   // Tratamento de segurança para o texto não quebrar o loop
   const textoSeguro = texto || "";
@@ -1843,7 +1879,8 @@ class MapScene extends Phaser.Scene {
           .setAlpha(0);
 
         // Identifica se esta ilha foi a que acabou de ser vencida
-        const justCompleted = isUnlocking && island.id === GameData.lastPhaseIndex;
+        const justCompleted =
+          isUnlocking && island.id === GameData.lastPhaseIndex;
 
         // Animação de "Pop-up" elástico com disparo do áudio
         this.tweens.add({
@@ -2510,7 +2547,7 @@ class PhaseScene extends Phaser.Scene {
             blink: "narrador_blink",
           },
           null,
-          "Olá! Seja bem-vindo à fase de boas-vindas.",
+          "Olá! Seja bem-vindo à fase de Introdução.",
           () => {
             // Parte 2: Sobre a FINECAP
             chamarNarrador(
@@ -2591,7 +2628,7 @@ class PhaseScene extends Phaser.Scene {
         if (cfg.id === "fase3") {
           textoNarrador =
             "Chegamos ao desafio final: Aqui você colocará a prova seus conhecimentos sobre tráfego pago, Inteligência Artificial e WhatsApp para Negócios.";
-        } 
+        }
 
         if (textoNarrador) {
           GameData.paused = true;
