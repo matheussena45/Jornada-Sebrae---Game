@@ -2508,12 +2508,12 @@ class PhaseScene extends Phaser.Scene {
       let textoNarrador = null;
 
       if (cfg.id === "fase1") {
-        // Pausa completamente o jogo para a introdução em partes da Fase 1
+        // Pausa completamente o jogo para a introdução da Fase 1
         GameData.paused = true;
         this.physics.pause();
         this.inputManager.setEnabled(false);
 
-        // Parte 1: Boas-vindas
+        // Parte 1: Sobre a FINECAP
         chamarNarrador(
           this,
           {
@@ -2523,9 +2523,9 @@ class PhaseScene extends Phaser.Scene {
             blink: "narrador_blink",
           },
           null,
-          "Olá! Seja bem-vindo à fase de Introdução.",
+          "A FINECAP acontece todo ano em Pau dos Ferros, reunindo negócios, cultura e inovação de toda a região.",
           () => {
-            // Parte 2: Sobre a FINECAP
+            // Parte 2: Sobre o Sebrae
             chamarNarrador(
               this,
               {
@@ -2535,26 +2535,12 @@ class PhaseScene extends Phaser.Scene {
                 blink: "narrador_blink",
               },
               null,
-              "O evento FINECAP acontece todo ano em Pau dos Ferros, reunindo negócios, cultura e inovação de toda a região.",
+              "E o Sebrae atua fortemente oferecendo suporte e fortalecimento para as pequenas empresas. Vamos começar!",
               () => {
-                // Parte 3: Sobre o Sebrae
-                chamarNarrador(
-                  this,
-                  {
-                    idle: "narrador_idle",
-                    talkOpen: "narrador_talk_open",
-                    talkMid: "narrador_talk_mid",
-                    blink: "narrador_blink",
-                  },
-                  null,
-                  "E o Sebrae atua fortemente oferecendo suporte e fortalecimento para as pequenas empresas. Vamos começar!",
-                  () => {
-                    // Retoma o jogo após o fim da terceira parte da Fase 1
-                    GameData.paused = false;
-                    this.physics.resume();
-                    this.inputManager.setEnabled(true);
-                  },
-                );
+                // Retoma o jogo após o fim da introdução
+                GameData.paused = false;
+                this.physics.resume();
+                this.inputManager.setEnabled(true);
               },
             );
           },
