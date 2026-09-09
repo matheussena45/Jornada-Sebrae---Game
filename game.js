@@ -129,7 +129,7 @@ function resetGameData() {
 const PHASES = [
   {
     id: "fase1",
-    name: "Conhecendo os Parceiros",
+    name: "Conhecendo a FINECAP",
     startX: 80,
     startDirection: "right",
     hasBoss: true,
@@ -146,23 +146,23 @@ const PHASES = [
     doorX: 1770,
     groundY: 500,
     showExitArrow: false,
-    exitDirection: "forward", // seta aponta pra frente
+    exitDirection: "forward",
     characterScale: 2.0,
     infoSpots: [
       {
         x: 350,
         y: 325,
-        text: "O Sebrae atua há 53 anos no RN focando na gestão, inovação e no apoio a pequenos negócios com soluções como o EMPRETEC.",
+        text: "O Sebrae atua há 53 anos no RN apoiando pequenos negócios com gestão, inovação e soluções como o EMPRETEC.",
       },
       {
         x: 845,
         y: 330,
-        text: "FINECAP significa Feira Intermunicipal de Educação, Cultura, Turismo e Negócios do Alto Oeste Potiguar.",
+        text: "FINECAP: Feira Intermunicipal de Educação, Cultura, Turismo e Negócios do Alto Oeste Potiguar.",
       },
       {
         x: 1250,
         y: 330,
-        text: "Reconhecida como Patrimônio Cultural Imaterial, a FINECAP chega à sua 29ª edição em 2026, com sua tradicional Feira de Negócios!",
+        text: "Patrimônio Cultural Imaterial, a FINECAP chega à 29ª edição com sua tradicional Feira de Negócios!",
       },
     ],
     boss: {
@@ -175,30 +175,29 @@ const PHASES = [
       portraitHeight: 180,
       dialogueBottom: 195,
       greeting:
-        "Olá! Sou Ralph Juliano, Analista do Sebrae. Antes de você seguir sua jornada, vamos ver o que você já sabe sobre o Sebrae e a FINECAP!",
+        "Olá! Sou Ralph Juliano, do Sebrae. Vamos ver o que você já conhece sobre o Sebrae e a FINECAP!",
       introLines: [
-        "Vamos lá, primeira pergunta:",
-        "Show de bola! Próxima:",
-        "Última pergunta, capricha:",
+        "Primeira pergunta:",
+        "Próxima questão:",
+        "Última pergunta:",
       ],
       correctLines: [
-        "Isso aí! Você manda bem.",
-        "Perfeito, é exatamente isso!",
-        "Excelente! Já sei que você vai longe.",
+        "Isso aí! Mandou bem.",
+        "Exatamente isso!",
+        "Perfeito! Você acertou.",
       ],
       wrongLines: [
-        "Ops, não foi dessa vez.",
-        "Quase! Deixa eu te explicar:",
-        "Essa pega muita gente, mas vamos entender:",
+        "Não foi dessa vez.",
+        "Atenção a este ponto:",
+        "Cuidado, veja o detalhe:",
       ],
       resultMessages: {
-        3: "Mandou muito bem, acertou todas! Pode seguir em frente com confiança.",
-        2: "Muito bom! Só um detalhezinho pra revisar, mas já está no caminho certo.",
-        1: "Você começou bem, mas vale revisar esses conceitos com calma.",
-        0: "Não foi dessa vez, mas o importante é continuar aprendendo. Vamos em frente!",
+        3: "Excelente! Você conhece muito bem a nossa atuação. Siga em frente!",
+        2: "Muito bom! Falta pouco para dominar tudo. Continue firme!",
+        1: "Bom começo! Vale a pena revisar esses pontos no evento.",
+        0: "Ainda há muito a conhecer. Aproveite o estande do Sebrae!",
       },
       questions: [
-        // --- PERGUNTAS SOBRE O SEBRAE ---
         {
           q: "O Sebrae atua principalmente no apoio a:",
           options: [
@@ -209,7 +208,7 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "O foco principal do Sebrae é apoiar, capacitar e fortalecer os micro e pequenos negócios e os empreendedores locais.",
+            "O foco do Sebrae é apoiar e fortalecer micro e pequenos negócios locais.",
         },
         {
           q: "A sigla Sebrae significa:",
@@ -221,7 +220,7 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "Sebrae significa Serviço Brasileiro de Apoio às Micro e Pequenas Empresas, sendo a principal instituição de fomento ao empreendedorismo do país.",
+            "A sigla significa Serviço Brasileiro de Apoio às Micro e Pequenas Empresas.",
         },
         {
           q: "Qual destes temas faz parte da atuação do Sebrae?",
@@ -233,30 +232,28 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "O Sebrae atua diretamente capacitando empresas e empreendedores em áreas vitais como gestão, inovação, finanças e marketing.",
+            "O Sebrae capacita empreendedores em gestão, finanças, inovação e marketing.",
         },
         {
           q: "Há quantos anos o Sebrae atua no Rio Grande do Norte?",
           options: ["43 anos", "48 anos", "53 anos", "60 anos"],
           correct: 2,
           explanation:
-            "O Sebrae atua há 53 anos no Rio Grande do Norte, transformando a realidade de pequenos negócios em todo o estado.",
+            "O Sebrae comemora 53 anos apoiando os pequenos negócios em todo o RN.",
         },
         {
           q: "Qual destas é uma solução do Sebrae?",
           options: ["EMPRETEC", "FGTS", "PIX", "IPTU"],
           correct: 0,
           explanation:
-            "O EMPRETEC é um dos principais e mais conceituados seminários de desenvolvimento do comportamento empreendedor oferecidos pelo Sebrae.",
+            "O EMPRETEC é um dos maiores seminários de comportamento empreendedor do Sebrae.",
         },
-
-        // --- PERGUNTAS SOBRE A FINECAP ---
         {
           q: "A FINECAP 2026 chega a qual edição?",
           options: ["25ª", "27ª", "29ª", "30ª"],
           correct: 2,
           explanation:
-            "Em 2026, a FINECAP celebra a sua grandiosa 29ª edição, consolidando-se como um dos maiores eventos da região.",
+            "Em 2026, a FINECAP comemora sua histórica 29ª edição.",
         },
         {
           q: "O que significa a sigla FINECAP?",
@@ -268,7 +265,7 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "A sigla carrega a essência multissetorial do evento: Feira Intermunicipal de Educação, Cultura, Turismo e Negócios do Alto Oeste Potiguar.",
+            "A sigla reúne Educação, Cultura, Turismo e Negócios do Alto Oeste Potiguar.",
         },
         {
           q: "Qual atividade também faz parte da programação tradicional da FINECAP, além dos grandes shows?",
@@ -280,7 +277,7 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "Além dos shows que atraem multidões, a Feira de Negócios é o coração do evento, movimentando a economia e o empreendedorismo.",
+            "A Feira de Negócios movimenta o comércio e o empreendedorismo regional.",
         },
         {
           q: "A FINECAP foi reconhecida oficialmente em Pau dos Ferros como:",
@@ -292,7 +289,7 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "Pela sua extrema importância histórica, cultural e econômica para a região, a FINECAP foi reconhecida como Patrimônio Cultural Imaterial do município.",
+            "O evento foi declarado Patrimônio Cultural Imaterial do município.",
         },
         {
           q: "Além dos shows, a FINECAP também reúne:",
@@ -304,7 +301,7 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "O evento é amplo e dinâmico, englobando simultaneamente negócios, cultura, turismo e educação no Alto Oeste Potiguar.",
+            "A FINECAP integra negócios, cultura, turismo e educação simultaneamente.",
         },
       ],
     },
@@ -334,17 +331,17 @@ const PHASES = [
       {
         x: 345,
         y: 300,
-        text: "Estar no Google não exige ter site: com o Perfil da Empresa gratuito, clientes locais acham seu endereço, horário e telefone facilmente.",
+        text: "Não precisa de site para estar no Google: use o Perfil da Empresa gratuito para ser achado na sua cidade.",
       },
       {
         x: 700,
         y: 90,
-        text: "No WhatsApp, não envie apenas o preço. Entenda a necessidade do cliente, atenda rápido e conduza a conversa para fechar a venda.",
+        text: "No WhatsApp, não envie só preço: tire dúvidas rápido e conduza a conversa para fechar a venda.",
       },
       {
         x: 1200,
         y: 290,
-        text: "Seguidores não pagam contas. Foque em produzir conteúdo útil para o seu público e use a IA para ter ideias e agilizar seus posts.",
+        text: "Seguidor não paga conta: gere conteúdo útil e use a IA para agilizar suas ideias e postagens.",
       },
     ],
     boss: {
@@ -357,30 +354,29 @@ const PHASES = [
       portraitHeight: 200,
       dialogueBottom: 240,
       greeting:
-        "Olá, eu sou Gilmara, Trainee do Sebrae! Seja bem-vindo à Trilha Digital! Vamos avaliar se sua empresa está realmente preparada para atrair, atender e vender na internet.",
+        "Olá, sou Gilmara, do Sebrae! Pronta para ver se sua empresa sabe atrair, atender e vender na internet?",
       introLines: [
-        "Primeiro desafio sobre presença digital:",
-        "Muito bem. Vamos elevar o nível na próxima:",
-        "Última pergunta da etapa, foco total:",
+        "Primeiro teste digital:",
+        "Muito bem, avançando:",
+        "Último desafio da fase:",
       ],
       correctLines: [
-        "Perfeito! Visão estratégica afiada.",
-        "Exatamente isso! Atendimento e presença andam juntos.",
-        "Resposta precisa. Você domina esse fundamento.",
+        "Perfeito! Visão afiada.",
+        "Exatamente! Atendimento é tudo.",
+        "Certeiro! Fundamento dominado.",
       ],
       wrongLines: [
-        "Cuidado, essa é uma armadilha comum na internet:",
-        "Não exatamente. Veja onde está o detalhe:",
-        "Atenção a este ponto crítico do digital:",
+        "Cuidado com esse erro comum:",
+        "Atenção: não é bem por aí:",
+        "Fique atento a este ponto:",
       ],
       resultMessages: {
-        3: "Excelente! Você compreende perfeitamente os pilares da presença digital e atendimento moderno.",
-        2: "Muito bom resultado! Você já tem boa noção prática, faltando apenas alinhar detalhes de conversão.",
-        1: "Você acertou alguns pontos, mas ainda comete erros comuns que custam clientes no dia a dia.",
-        0: "Atenção: sua presença digital precisa de ajustes urgentes para não perder vendas para a concorrência.",
+        3: "Excelente! Você domina presença digital e atendimento para vender mais.",
+        2: "Muito bom! Ajustando poucos detalhes de atendimento suas vendas decolam.",
+        1: "Você tem noções básicas, mas alguns deslizes estão custando clientes.",
+        0: "Atenção: ajuste sua presença digital urgente para não perder vendas.",
       },
       questions: [
-        // 1. Fácil (Básico Q1)
         {
           q: "Ter muitos seguidores significa vender mais?",
           options: [
@@ -391,9 +387,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Seguidores representam alcance, mas vendas dependem de público qualificado, produto adequado, confiança e bom atendimento.",
+            "Seguidor é apenas alcance. Vendas exigem confiança, produto certo e bom atendimento.",
         },
-        // 2. Fácil (Básico Q2)
         {
           q: "O WhatsApp pode ser um canal de vendas?",
           options: [
@@ -404,9 +399,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "O WhatsApp se tornou um dos principais canais comerciais diretos, permitindo tirar dúvidas, enviar propostas e fechar vendas.",
+            "O WhatsApp é um canal comercial direto e ágil para negociar e fechar vendas.",
         },
-        // 3. Fácil (Básico Q3)
         {
           q: "Sua empresa pode aparecer no Google sem ter um site?",
           options: [
@@ -417,9 +411,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Com o Perfil da Empresa no Google (antigo Google Meu Negócio), sua empresa aparece nas buscas locais e no Google Maps gratuitamente.",
+            "O Perfil da Empresa coloca seu negócio nas buscas locais e no Google Maps de graça.",
         },
-        // 4. Fácil (Básico Q5)
         {
           q: "O que é tráfego pago?",
           options: [
@@ -430,9 +423,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Tráfego pago consiste em investir dinheiro em plataformas como Meta Ads ou Google Ads para exibir sua mensagem a um público específico.",
+            "Tráfego pago é investir em anúncios para alcançar públicos segmentados na web.",
         },
-        // 5. Fácil (Básico Q10)
         {
           q: "A IA pode ajudar na criação de posts?",
           options: [
@@ -443,9 +435,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Ferramentas de IA generativa auxiliam na geração de temas, criação de legendas, roteiros e organização do cronograma de postagens.",
+            "A IA ajuda a planejar temas, escrever legendas e criar roteiros de conteúdo.",
         },
-        // 6. Média (Intermediário Q11)
         {
           q: "Seu cliente procura sua empresa no Google e não encontra. O que precisa melhorar?",
           options: [
@@ -456,9 +447,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Criar e manter atualizado o Perfil da Empresa no Google garante que clientes encontrem seu horário, contato e localização.",
+            "Cadastrar e atualizar o Perfil da Empresa garante que achem seu contato e endereço.",
         },
-        // 7. Média (Intermediário Q14)
         {
           q: "Sua empresa recebe muitos contatos no WhatsApp, mas vende pouco. O que deve analisar?",
           options: [
@@ -469,9 +459,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Muitas mensagens sem conversão indicam falhas na abordagem, demora na resposta, falta de clareza ou ausência de condução para o fechamento.",
+            "Muitas mensagens sem vendas apontam demora na resposta ou falta de condução comercial.",
         },
-        // 8. Média (Intermediário Q16)
         {
           q: "Uma avaliação positiva no Google pode:",
           options: [
@@ -482,9 +471,8 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "Avaliações de clientes reais servem como prova social, aumentando a credibilidade e influenciando diretamente a decisão de compra.",
+            "Avaliações reais comprovam qualidade e aumentam a confiança de quem quer comprar.",
         },
-        // 9. Média (Intermediário Q18)
         {
           q: "A IA criou um texto para sua empresa. O que fazer antes de publicar?",
           options: [
@@ -495,9 +483,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "A IA serve como assistente; o empresário deve sempre conferir a precisão das informações e dar o tom de voz autêntico da sua marca.",
+            "A IA é uma assistente: confira as informações e dê o tom de voz da sua empresa.",
         },
-        // 10. Média (Intermediário Q20)
         {
           q: "O cliente chama no WhatsApp perguntando apenas 'quanto custa?'. Uma boa resposta é:",
           options: [
@@ -508,7 +495,7 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Jogar apenas o preço reduz o valor percebido. Identifique primeiro o contexto do cliente para justificar os benefícios do que você vende.",
+            "Enviar só o preço tira o valor do produto; entenda a necessidade do cliente antes.",
         },
       ],
     },
@@ -537,17 +524,17 @@ const PHASES = [
       {
         x: 180,
         y: 320,
-        text: "Antes de impulsionar sua empresa no digital, compreenda melhor sobre o público que você quer alcançar e a mensagem que quer entregar. Vender vai além de alcançar o cliente.",
+        text: "Antes de anunciar, defina quem você quer atrair e a mensagem certa. Vender vai além de alcançar pessoas.",
       },
       {
         x: 850,
         y: 240,
-        text: "Fique atento a forma como você posiciona sua empresa no digital. Ter uma estratégia de marketing é fundamental para converter os cliques em vendas.",
+        text: "Posicionamento importa: tenha uma estratégia clara para transformar cliques em vendas reais.",
       },
       {
         x: 1180,
         y: 260,
-        text: "Curtida não paga conta. No tráfego pago, o indicador soberano é o retorno sobre o investimento (ROI) e o custo de cada cliente conquistado.",
+        text: "Curtida não paga conta: no tráfego pago, foque no retorno do investimento (ROI) e nas vendas.",
       },
     ],
     boss: {
@@ -560,36 +547,35 @@ const PHASES = [
       portraitHeight: 240,
       dialogueBottom: 290,
       greeting:
-        "Olá, eu sou Renato Gouveia! Parabéns por chegar ao Acelerador Digital! Vamos analisar sua capacidade de tomar decisões com base em dados, funil de vendas e retorno financeiro.",
+        "Olá, sou Renato Gouveia! Vamos avaliar sua capacidade de tomar decisões com dados e foco em vendas.",
       merchanText:
-        "Quer dominar o marketing e transformar seguidores em clientes reais? Não perca tempo: conheça a solução Acelerador Digital do Sebrae!",
+        "Quer dominar o marketing e transformar seguidores em clientes reais? Conheça o Acelerador Digital do Sebrae!",
       qrCode: {
         image: "assets/images/qrcode_acelerador.png",
         duration: 25,
       },
       introLines: [
-        "Iniciando a bateria estratégica final:",
-        "Muito bom! Vamos aprofundar na análise de dados:",
-        "Última questão decisiva da jornada:",
+        "Desafio de performance:",
+        "Analisando os dados:",
+        "Última questão decisiva:",
       ],
       correctLines: [
         "Leitura analítica impecável!",
-        "Exato! Pensamento de quem domina métricas de verdade.",
-        "Resposta cirúrgica. Decisão tomada com base em resultados!",
+        "Exato! Foco em resultado real.",
+        "Resposta cirúrgica!",
       ],
       wrongLines: [
-        "Cuidado! Essa falha de análise queima orçamento à toa:",
-        "Não exatamente. No marketing avançado precisamos olhar o funil:",
-        "Atenção: olhar apenas a métrica de vaidade gera prejuízo:",
+        "Cuidado: isso queima orçamento!",
+        "Atenção: avalie o funil completo:",
+        "Métricas de vaidade enganam:",
       ],
       resultMessages: {
-        3: "Desempenho genial! Você demonstrou maturidade para gerenciar orçamentos de tráfego e escalar negócios na internet.",
-        2: "Ótimo resultado! Você já pensa como gestor de tráfego, precisando apenas calibrar alguns pontos de conversão.",
-        1: "Você tem noções importantes, mas ainda confunde métricas de vaidade com vendas reais no fim do mês.",
-        0: "Atenção: investir no digital sem entender a jornada do cliente e o pós-clique resulta em desperdício de dinheiro.",
+        3: "Brilhante! Você sabe gerenciar orçamento e focar em vendas com dados.",
+        2: "Muito bom! Você já pensa estrategicamente, precisando de poucos ajustes.",
+        1: "Você tem noções úteis, mas ainda confunde métricas de vaidade com vendas.",
+        0: "Atenção: investir sem estratégia drena seu caixa. Busque o Sebrae!",
       },
       questions: [
-        // 1. Média (Intermediário Q12)
         {
           q: "Antes de anunciar na internet, é importante saber:",
           options: [
@@ -600,9 +586,8 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "Definir a persona e o público-alvo garante que os anúncios sejam exibidos para quem realmente tem interesse e poder de compra.",
+            "Definir o público-alvo evita queimar verba com pessoas que não têm interesse no produto.",
         },
-        // 2. Média (Intermediário Q13)
         {
           q: "Impulsionar um post e fazer uma campanha estruturada de tráfego pago são a mesma coisa?",
           options: [
@@ -613,9 +598,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Campanhas profissionais permitem escolher objetivos de conversão específicos, testar criativos, instalar pixels e mensurar retornos exatos.",
+            "Campanhas completas permitem testar criativos, rastrear conversões e focar em vendas.",
         },
-        // 3. Média (Intermediário Q15)
         {
           q: "Qual prática ajuda a vender pelo WhatsApp?",
           options: [
@@ -626,9 +610,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Venda consultiva exige escuta ativa, qualificação do interesse e condução clara para a tomada de decisão.",
+            "Vender exige escutar o cliente e conduzi-lo com atenção até o fechamento.",
         },
-        // 4. Média (Intermediário Q17)
         {
           q: "Para produzir conteúdo relevante, a empresa deve pensar primeiro:",
           options: [
@@ -639,9 +622,8 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "Conteúdo que gera autoridade e engajamento resolve dores e tira dúvidas reais que o cliente enfrenta no dia a dia.",
+            "Conteúdo de valor resolve dúvidas e dores reais que seu público enfrenta no dia a dia.",
         },
-        // 5. Média (Intermediário Q19)
         {
           q: "Seu anúncio alcança muitas pessoas, mas poucas demonstram interesse. Uma possível causa é:",
           options: [
@@ -652,9 +634,8 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "Se o criativo (imagem/texto) não dialoga com o interesse do público segmentado, o anúncio é ignorado.",
+            "Se o anúncio não gera interesse, a mensagem ou a segmentação do público estão erradas.",
         },
-        // 6. Difícil (Avançado Q21)
         {
           q: "Seu anúncio teve muitos cliques, mas poucas vendas. O que deve ser analisado?",
           options: [
@@ -665,9 +646,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "O anúncio cumpriu o papel de atrair. A falha está na etapa posterior: página com carregamento lento, preço fora da expectativa ou checkout confuso.",
+            "Cliques sem compras apontam problemas na página, preço ou checkout confuso.",
         },
-        // 7. Difícil (Avançado Q22)
         {
           q: "Duas campanhas custaram R$ 200. Uma gerou 10 vendas e outra apenas 2. O que importa analisar?",
           options: [
@@ -678,9 +658,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Em anúncios de performance, o Custo por Aquisição (CPA) e o volume de conversão definem qual estratégia deve receber mais verba.",
+            "Em tráfego, o que manda é o custo por venda e o resultado financeiro obtido.",
         },
-        // 8. Difícil (Avançado Q24)
         {
           q: "Um anúncio gera muitos contatos no WhatsApp, mas quase nenhuma venda. Onde pode estar o problema?",
           options: [
@@ -691,9 +670,8 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "Se o lead chega até a conversa, o gargalo está na negociação humana: demora na resposta, falta de script de vendas ou má condução comercial.",
+            "Se o contato chegou, o gargalo está no atendimento: demora na resposta ou abordagem fraca.",
         },
-        // 9. Difícil (Avançado Q25)
         {
           q: "Você investiu R$ 300 em anúncios e gerou R$ 3.000 em vendas. Qual informação ainda é importante para avaliar o resultado?",
           options: [
@@ -704,9 +682,8 @@ const PHASES = [
           ],
           correct: 0,
           explanation:
-            "Faturamento bruto não é lucro. É indispensável calcular o Retorno sobre Investimento Publicitário (ROAS) descontando o custo das mercadorias vendidas e taxas.",
+            "É indispensável calcular os custos do produto para confirmar se houve lucro real.",
         },
-        // 10. Difícil (Avançado Q30)
         {
           q: "Qual estratégia digital tende a ser mais eficiente?",
           options: [
@@ -717,7 +694,7 @@ const PHASES = [
           ],
           correct: 1,
           explanation:
-            "O ciclo sustentável de vendas online consiste no funil completo: atração qualificada, atendimento ágil e acompanhamento contínuo de métricas.",
+            "O ciclo sustentável combina atrair o público certo, atender com agilidade e medir resultados.",
         },
       ],
     },
@@ -1144,7 +1121,7 @@ const BOSS_WRONG_LINES = [
   "Quase! Deixa eu te explicar:",
   "Essa é traiçoeira, mas vamos entender:",
 ];
-const TYPE_SPEED_MS = 60; // velocidade da digitação (ms por letra) — aumente pra deixar mais devagar, diminua pra mais rápido
+const TYPE_SPEED_MS = 40; // velocidade da digitação (ms por letra) — aumente pra deixar mais devagar, diminua pra mais rápido
 const INFO_TYPE_SPEED_MS = 35;
 
 function pickLine(list, index) {
@@ -1184,7 +1161,6 @@ function startBossBattle(scene, phaseConfig, bossSprite, onComplete) {
     return mySession !== GameData.sessionId;
   }
 
-  // Efeito de "digitação" — clicar no balão pula direto pro texto completo
   // Efeito de "digitação" — clicar no balão pula direto pro texto completo
   function typeText(text, onDone) {
     clearInterval(typeInterval);
@@ -1335,7 +1311,7 @@ function startBossBattle(scene, phaseConfig, bossSprite, onComplete) {
 
     typeText(resultText, () => {
       if (isStale()) return;
-      const waitTime = isCorrect ? 1400 : 3200;
+      const waitTime = isCorrect ? 1200 : 2400;
       setTimeout(() => {
         if (isStale()) return;
         qIndex += 1;
