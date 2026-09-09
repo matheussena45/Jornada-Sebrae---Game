@@ -2781,8 +2781,14 @@ const game = new Phaser.Game(config);
 function fitGameToScreen() {
   const wrapper = document.getElementById("game-wrapper");
   if (!wrapper) return;
+
   const scale = Math.min(window.innerWidth / 960, window.innerHeight / 540);
-  wrapper.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  
+  // 1.25 a 1.30 estica entre 25% e 30% na vertical
+  // Ajuste esse valor se quiser esticar um pouco mais ou menos
+  const fatorVertical = 1.25; 
+
+  wrapper.style.transform = `translate(-50%, -50%) scale(${scale}, ${scale * fatorVertical})`;
 }
 window.addEventListener("resize", fitGameToScreen);
 fitGameToScreen();
