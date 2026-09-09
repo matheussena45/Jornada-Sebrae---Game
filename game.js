@@ -1756,9 +1756,6 @@ class MapScene extends Phaser.Scene {
         "assets/characters/narrador_blink_4.png",
       );
     }
-    if (!this.cache.audio.exists("voz_mapa")) {
-      this.load.audio("voz_mapa", "assets/audio/voz_mapa.mp3");
-    }
   }
 
   create() {
