@@ -2991,3 +2991,26 @@ function showQRCodeModal(qrConfig, onDone) {
     }
   }, 1000);
 }
+
+const btnReset = document.getElementById("btn-reset-ranking");
+
+if (btnReset) {
+  btnReset.addEventListener("click", () => {
+    // Abre a caixa de diálogo nativa com campo para digitar
+    const senhaDigitada = window.prompt("Área restrita à equipe.\nDigite a senha para resetar o ranking:");
+
+    // Se o usuário cancelou o prompt
+    if (senhaDigitada === null) return;
+
+    // Defina sua senha aqui (ex: 2026)
+    if (senhaDigitada === "2026") {
+      // Limpa a chave do ranking (ou localStorage.clear())
+      localStorage.removeItem("jornada_sebrae_finecap_v1"); // use a sua chave exata do ranking
+      
+      alert("Ranking zerado com sucesso!");
+      window.location.reload(); // Recarrega a página para atualizar a lista limpa
+    } else {
+      alert("Senha incorreta!");
+    }
+  });
+}
